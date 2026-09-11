@@ -2,596 +2,765 @@
 <html lang="zh-HK">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Korean Grammar Interactive Master · 韓語文法互動學習系統</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#ffffff">
+  <title>Korean Grammar Master · 韓語文法互動學習</title>
   <style>
     :root {
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --primary-light: #eef2ff;
-      --secondary: #0ea5e9;
-      --secondary-light: #f0f9ff;
-      --accent: #f59e0b;
-      --success: #10b981;
-      --success-light: #ecfdf5;
-      --danger: #ef4444;
-      --danger-light: #fef2f2;
-      --bg: #f8fafc;
+      --primary: #58cc02; /* Duolingo vibrant green */
+      --primary-dark: #46a302;
+      --primary-shadow: #46a302;
+      --indigo: #4f46e5;
+      --indigo-shadow: #3730a3;
+      --indigo-light: #eef2ff;
+      --secondary: #1cb0f6;
+      --secondary-shadow: #1899d6;
+      --accent: #ff9600;
+      --accent-shadow: #d88000;
+      --danger: #ff4b4b;
+      --danger-shadow: #ea2b2b;
+      --danger-light: #fee2e2;
+      --success-light: #dcfce7;
       --card-bg: #ffffff;
-      --text: #1e293b;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --radius: 14px;
-      --shadow: 0 4px 12px -2px rgba(0,0,0,0.06), 0 2px 6px -1px rgba(0,0,0,0.04);
-      --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.08), 0 4px 10px -2px rgba(0,0,0,0.04);
+      --bg: #f7f9fa;
+      --text: #3c3c3c;
+      --text-muted: #777777;
+      --border: #e5e5e5;
+      --border-dark: #d4d4d4;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+      --radius-pill: 999px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     }
 
     body {
       background-color: var(--bg);
       color: var(--text);
-      line-height: 1.6;
-      padding-bottom: 60px;
-    }
-
-    header {
-      background: linear-gradient(135deg, #312e81 0%, #4338ca 50%, #4f46e5 100%);
-      color: white;
-      padding: 30px 20px 24px;
-      box-shadow: 0 4px 20px rgba(79, 70, 229, 0.2);
-    }
-
-    .header-inner {
-      max-width: 1000px;
-      margin: 0 auto;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      padding-top: calc(var(--safe-top) + 60px);
+      padding-bottom: calc(var(--safe-bottom) + 75px);
+      overflow-x: hidden;
     }
 
-    .header-title-row {
+    /* Top App Header (Duolingo / iOS style) */
+    header.app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--safe-top) + 60px);
+      padding-top: var(--safe-top);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 2px solid var(--border);
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
+      padding-left: 16px;
+      padding-right: 16px;
+      z-index: 100;
     }
 
-    .app-title {
-      font-size: 1.75rem;
+    .header-stats {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       font-weight: 800;
-      letter-spacing: -0.5px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .app-subtitle {
       font-size: 0.95rem;
-      opacity: 0.85;
-      font-weight: 400;
     }
 
-    .top-stats {
-      display: flex;
-      gap: 12px;
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: #f1f5f9;
+      color: var(--text);
     }
 
-    .stat-badge {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(8px);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
+    .stat-pill.streak { color: var(--accent); }
+    .stat-pill.xp { color: #8b5cf6; }
+    .stat-pill.hearts { color: var(--danger); }
+
+    .header-controls {
       display: flex;
       align-items: center;
-      gap: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    /* Navigation Bar */
-    nav.nav-tabs {
-      display: flex;
       gap: 8px;
-      background: rgba(0, 0, 0, 0.18);
-      padding: 6px;
-      border-radius: 12px;
-      margin-top: 6px;
-      overflow-x: auto;
     }
 
-    .nav-tab-btn {
-      background: transparent;
+    .icon-btn {
+      background: none;
       border: none;
-      color: rgba(255, 255, 255, 0.8);
-      padding: 8px 18px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 1.25rem;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
       cursor: pointer;
-      transition: all 0.2s ease;
-      white-space: nowrap;
+      color: var(--text-muted);
+      transition: background 0.15s;
     }
 
-    .nav-tab-btn:hover {
-      color: white;
-      background: rgba(255, 255, 255, 0.1);
+    .icon-btn:active {
+      background: #e2e8f0;
+      transform: scale(0.92);
     }
 
-    .nav-tab-btn.active {
-      background: white;
-      color: var(--primary);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    /* Progress Capsule Header Bar */
+    .session-progress-bar {
+      position: fixed;
+      top: calc(var(--safe-top) + 60px);
+      left: 0;
+      right: 0;
+      height: 12px;
+      background: #e5e7eb;
+      z-index: 95;
+      padding: 2px 16px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #58cc02, #22c55e);
+      border-radius: 6px;
+      transition: width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: "";
+      position: absolute;
+      top: 1px;
+      left: 6px;
+      right: 6px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 3px;
     }
 
     /* Main Container */
-    main {
-      max-width: 1000px;
-      margin: 24px auto;
-      padding: 0 16px;
-    }
-
-    /* Filter Controls */
-    .filter-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 18px 20px;
-      margin-bottom: 20px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
+    main.app-main {
+      flex: 1;
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
       display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
     }
 
-    .filter-group {
+    /* Horizontal Chip Filter Bar */
+    .chip-scroll-container {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      scrollbar-width: none;
     }
+    .chip-scroll-container::-webkit-scrollbar { display: none; }
 
-    .filter-label {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    select, button.action-btn {
+    .chip-btn {
+      flex-shrink: 0;
       padding: 8px 14px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: white;
-      font-size: 0.9rem;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      cursor: pointer;
-    }
-
-    select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-    }
-
-    .action-btn.primary {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-      font-weight: 600;
-    }
-
-    .action-btn.primary:hover {
-      background: var(--primary-hover);
-    }
-
-    /* Quiz Card */
-    .quiz-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 28px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-lg);
-      position: relative;
-      margin-bottom: 24px;
-    }
-
-    .card-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .badge-pill {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 700;
-    }
-
-    .badge-beginner {
-      background: #dbeafe;
-      color: #1e40af;
-    }
-
-    .badge-advanced {
-      background: #fce7f3;
-      color: #9d174d;
-    }
-
-    .badge-unit {
-      background: #f1f5f9;
-      color: #475569;
-    }
-
-    .q-progress {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .question-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .question-body {
-      background: var(--bg);
-      border-left: 4px solid var(--primary);
-      padding: 16px 20px;
-      border-radius: 0 8px 8px 0;
-      font-size: 1.1rem;
-      margin-bottom: 24px;
-      white-space: pre-line;
-      line-height: 1.7;
-    }
-
-    .tts-btn {
-      background: rgba(79, 70, 229, 0.1);
-      border: none;
-      color: var(--primary);
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      margin-left: 8px;
-      vertical-align: middle;
-    }
-
-    .tts-btn:hover {
-      background: rgba(79, 70, 229, 0.2);
-    }
-
-    /* Options List */
-    .options-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
-    @media (min-width: 640px) {
-      .options-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    .option-btn {
-      text-align: left;
-      padding: 14px 18px;
-      border-radius: 10px;
+      border-radius: var(--radius-pill);
       border: 2px solid var(--border);
       background: white;
-      font-size: 1rem;
-      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: relative;
-    }
-
-    .option-btn:hover:not(:disabled) {
-      border-color: var(--primary);
-      background: var(--primary-light);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
-
-    .option-btn.selected-correct {
-      border-color: var(--success);
-      background: var(--success-light);
-      color: #065f46;
-      font-weight: 700;
-    }
-
-    .option-btn.selected-wrong {
-      border-color: var(--danger);
-      background: var(--danger-light);
-      color: #991b1b;
-      font-weight: 700;
-    }
-
-    .option-btn.reveal-correct {
-      border-color: var(--success);
-      background: #f0fdf4;
-      border-style: dashed;
-    }
-
-    /* Explanation Panel */
-    .explanation-panel {
-      display: none;
-      margin-top: 20px;
-      padding: 20px;
-      border-radius: 10px;
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .explanation-header {
-      font-weight: 700;
-      margin-bottom: 8px;
       display: flex;
       align-items: center;
       gap: 6px;
+      box-shadow: 0 2px 0 var(--border);
+      transition: all 0.15s ease;
     }
 
-    .explanation-header.correct {
-      color: #059669;
+    .chip-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 0 0 transparent;
     }
 
-    .explanation-header.wrong {
-      color: #dc2626;
+    .chip-btn.active {
+      border-color: var(--secondary);
+      background: #f0f9ff;
+      color: var(--secondary);
+      box-shadow: 0 2px 0 var(--secondary-shadow);
     }
 
-    .explanation-text {
-      font-size: 0.95rem;
-      color: #334155;
+    /* Question Screen Layout */
+    .question-screen {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .unit-tag-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 12px;
-      white-space: pre-line;
     }
 
-    .grammar-note-box {
-      background: white;
-      border: 1px dashed #cbd5e1;
+    .level-badge {
+      display: inline-block;
+      padding: 4px 10px;
       border-radius: 8px;
-      padding: 12px 14px;
-      font-size: 0.88rem;
-      color: #475569;
-      white-space: pre-line;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
     }
 
-    .quiz-footer {
+    .badge-beg { background: #e0f2fe; color: #0369a1; }
+    .badge-mid { background: #dcfce7; color: #15803d; }
+    .badge-adv { background: #fce7f3; color: #9d174d; }
+
+    .unit-title-text {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
+    }
+
+    /* Prompt Box */
+    .prompt-bubble {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: 0 4px 0 var(--border);
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .prompt-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 20px;
-      padding-top: 18px;
-      border-top: 1px solid var(--border);
+      margin-bottom: 10px;
     }
 
-    /* Reference & Cheatsheet Styles */
-    .reference-section {
-      display: none;
+    .prompt-label {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--indigo);
+      text-transform: uppercase;
     }
 
-    .ref-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
+    .speaker-btn {
+      background: var(--indigo-light);
+      border: none;
+      color: var(--indigo);
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
     }
 
-    @media (min-width: 768px) {
-      .ref-grid {
-        grid-template-columns: 1fr 1fr;
-      }
+    .speaker-btn:active {
+      transform: scale(0.95);
+      background: #e0e7ff;
     }
 
-    .ref-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 22px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
+    .question-dialogue {
+      font-size: 1.18rem;
+      font-weight: 600;
+      line-height: 1.75;
+      color: #1e293b;
+      white-space: pre-line;
+      user-select: text;
+    }
+
+    .blank-placeholder {
+      display: inline-block;
+      min-width: 70px;
+      border-bottom: 3px dashed var(--indigo);
+      color: var(--indigo);
+      text-align: center;
+      padding: 0 4px;
+      font-weight: 800;
+    }
+
+    /* Duolingo Chunky 3D Option Buttons */
+    .options-container {
       display: flex;
       flex-direction: column;
       gap: 12px;
+      margin-bottom: 24px;
     }
 
-    .ref-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--primary);
+    .chunky-option {
+      width: 100%;
+      min-height: 58px;
+      padding: 14px 16px;
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 0 var(--border-dark);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 14px;
+      text-align: left;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
     }
 
-    .ref-badge {
-      font-size: 0.75rem;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: var(--primary-light);
-      color: var(--primary);
-      font-weight: 600;
+    .chunky-option:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 var(--border-dark);
     }
 
-    .ref-content {
+    .option-key {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .chunky-option.selected {
+      border-color: #6366f1;
+      background: var(--indigo-light);
+      box-shadow: 0 4px 0 #4f46e5;
+    }
+    .chunky-option.selected .option-key {
+      border-color: #6366f1;
+      background: #6366f1;
+      color: white;
+    }
+
+    .chunky-option.correct-reveal {
+      border-color: #22c55e !important;
+      background: #f0fdf4 !important;
+      box-shadow: 0 4px 0 #16a34a !important;
+      color: #15803d !important;
+    }
+    .chunky-option.correct-reveal .option-key {
+      border-color: #16a34a;
+      background: #16a34a;
+      color: white;
+    }
+
+    .chunky-option.wrong-reveal {
+      border-color: #ef4444 !important;
+      background: #fef2f2 !important;
+      box-shadow: 0 4px 0 #dc2626 !important;
+      color: #b91c1c !important;
+    }
+    .chunky-option.wrong-reveal .option-key {
+      border-color: #dc2626;
+      background: #dc2626;
+      color: white;
+    }
+
+    /* Duolingo Slide-Up Bottom Drawer */
+    .feedback-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 24px 24px 0 0;
+      padding: 20px 20px calc(var(--safe-bottom) + 20px);
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.12);
+      transform: translateY(110%);
+      transition: transform 0.32s cubic-bezier(0.18, 0.89, 0.32, 1.18);
+      z-index: 200;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .feedback-sheet.open {
+      transform: translateY(0);
+    }
+
+    .feedback-sheet.correct {
+      background: var(--success-light);
+      border-top: 2px solid #86efac;
+    }
+
+    .feedback-sheet.wrong {
+      background: var(--danger-light);
+      border-top: 2px solid #fca5a5;
+    }
+
+    .feedback-header-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .feedback-icon {
+      font-size: 1.8rem;
+    }
+
+    .feedback-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+    .feedback-sheet.correct .feedback-title { color: #15803d; }
+    .feedback-sheet.wrong .feedback-title { color: #b91c1c; }
+
+    .feedback-correct-answer {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #15803d;
+      margin-bottom: 8px;
+    }
+
+    .feedback-explanation {
       font-size: 0.92rem;
       color: #334155;
-      line-height: 1.6;
+      line-height: 1.5;
+      margin-bottom: 14px;
+      max-height: 150px;
+      overflow-y: auto;
     }
 
-    .ref-table {
+    .btn-continue {
       width: 100%;
-      border-collapse: collapse;
-      margin: 8px 0;
-      font-size: 0.88rem;
+      height: 54px;
+      border-radius: var(--radius-md);
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.1s;
     }
 
-    .ref-table th, .ref-table td {
-      border: 1px solid var(--border);
-      padding: 8px 10px;
-      text-align: left;
+    .feedback-sheet.correct .btn-continue {
+      background: var(--primary);
+      box-shadow: 0 4px 0 var(--primary-shadow);
+    }
+    .feedback-sheet.correct .btn-continue:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 var(--primary-shadow);
     }
 
-    .ref-table th {
-      background: #f1f5f9;
-      font-weight: 600;
-      color: var(--text);
+    .feedback-sheet.wrong .btn-continue {
+      background: var(--danger);
+      box-shadow: 0 4px 0 var(--danger-shadow);
+    }
+    .feedback-sheet.wrong .btn-continue:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 var(--danger-shadow);
     }
 
-    .example-tag {
-      background: #f8fafc;
-      border-left: 3px solid #6366f1;
-      padding: 8px 12px;
-      border-radius: 0 6px 6px 0;
-      font-size: 0.88rem;
-      margin: 4px 0;
+    /* iOS Native Fixed Bottom Tab Bar */
+    nav.tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--safe-bottom) + 60px);
+      padding-bottom: var(--safe-bottom);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
     }
 
-    /* Mistake Review Section */
-    .mistakes-section {
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 6px 0;
+      transition: color 0.15s;
+    }
+
+    .tab-item .tab-icon {
+      font-size: 1.35rem;
+    }
+
+    .tab-item.active {
+      color: #4f46e5;
+    }
+
+    /* Cheatsheet / Reference Screen on Mobile */
+    .reference-screen {
       display: none;
     }
 
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-muted);
-    }
-
-    .empty-state-icon {
-      font-size: 3rem;
-      margin-bottom: 12px;
-    }
-
-    /* Progress bar */
-    .progress-bar-container {
+    .ref-search-input {
       width: 100%;
-      height: 6px;
-      background: #e2e8f0;
-      border-radius: 3px;
-      overflow: hidden;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border);
+      background: white;
+      font-size: 0.95rem;
+      outline: none;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 0 var(--border);
+    }
+    .ref-search-input:focus {
+      border-color: var(--indigo);
+    }
+
+    .ref-card-mobile {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 3px 0 var(--border);
+    }
+
+    .ref-card-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--indigo);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mobile-table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    table.mobile-table {
+      width: 100%;
+      min-width: 320px;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    table.mobile-table th, table.mobile-table td {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    table.mobile-table th { background: #f8fafc; font-weight: 700; }
+
+    /* Mistakes Screen */
+    .mistakes-screen {
+      display: none;
+    }
+
+    /* Stats Screen */
+    .stats-screen {
+      display: none;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
       margin-bottom: 20px;
     }
 
-    .progress-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #4f46e5, #06b6d4);
-      width: 0%;
-      transition: width 0.3s ease;
+    .stat-card-big {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 3px 0 var(--border);
+    }
+
+    .stat-card-big .num {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--indigo);
+      margin-bottom: 4px;
+    }
+
+    .stat-card-big .label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="header-inner">
-      <div class="header-title-row">
-        <div>
-          <h1 class="app-title">🇰🇷 Korean Grammar Interactive Master</h1>
-          <p class="app-subtitle">《Korean Grammar in Use》初級 / 高級互動練習與文法辨析系統</p>
-        </div>
-        <div class="top-stats">
-          <div class="stat-badge" title="連續答對次數">🔥 連勝: <span id="streak-count">0</span></div>
-          <div class="stat-badge" title="累計得分">⭐ 分數: <span id="score-count">0</span></div>
-          <div class="stat-badge" title="完成率">📈 正確率: <span id="accuracy-rate">0%</span></div>
-        </div>
-      </div>
-
-      <nav class="nav-tabs">
-        <button class="nav-tab-btn active" onclick="switchView('practice')">✍️ 互動練習 (Practice)</button>
-        <button class="nav-tab-btn" onclick="switchView('reference')">📖 文法辨析與要點速查 (Cheatsheet)</button>
-        <button class="nav-tab-btn" onclick="switchView('mistakes')">📌 錯題本與重點複習 (Mistakes Review)</button>
-      </nav>
+  <!-- Top Fixed Header -->
+  <header class="app-header">
+    <div class="header-stats">
+      <div class="stat-pill streak">🔥 <span id="streak-count">0</span></div>
+      <div class="stat-pill xp">💎 <span id="xp-count">0</span></div>
+      <div class="stat-pill hearts">❤️ <span id="hearts-count">5</span></div>
+    </div>
+    <div class="header-controls">
+      <button class="icon-btn" id="sound-toggle-btn" onclick="toggleSound()" title="音效切換">🔊</button>
+      <button class="icon-btn" onclick="openChapterModal()" title="章節篩選">☰</button>
     </div>
   </header>
 
-  <main>
-    <!-- Filter Bar (visible in practice mode) -->
-    <div class="filter-card" id="practice-filters">
-      <div class="filter-group">
-        <span class="filter-label">教材範圍:</span>
-        <select id="book-select" onchange="onFilterChange()">
-          <option value="all">🌟 全部教材 (初級 + 高級)</option>
-          <option value="beginner">📘 初級 (Beginning to Early Intermediate · Ahn Jean-myung et al.)</option>
-          <option value="intermediate">📗 中級 (Intermediate · Min Jin-young & Ahn Jean-myung)</option>
-          <option value="advanced">📕 高級 (Advanced · Ahn Jean-myung et al.)</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <span class="filter-label">章節類別:</span>
-        <select id="unit-select" onchange="onFilterChange()">
-          <option value="all">所有章節類別</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <button class="action-btn" onclick="shuffleCurrentQuestions()">🔀 隨機洗牌</button>
-        <button class="action-btn" onclick="resetProgress()">🔄 重置記錄</button>
-      </div>
+  <!-- Session Progress Bar -->
+  <div class="session-progress-bar">
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-bar"></div>
     </div>
+  </div>
 
-    <!-- Practice View -->
-    <section id="view-practice">
-      <div class="progress-bar-container">
-        <div class="progress-bar-fill" id="progress-bar"></div>
+  <main class="app-main">
+    <!-- View 1: Practice Arena -->
+    <section id="screen-practice" class="question-screen">
+      <!-- Horizontal Chip Filters -->
+      <div class="chip-scroll-container">
+        <button class="chip-btn active" onclick="setBookFilter('all', this)">🌟 全部</button>
+        <button class="chip-btn" onclick="setBookFilter('beginner', this)">📘 初級</button>
+        <button class="chip-btn" onclick="setBookFilter('intermediate', this)">📗 中級 (26章)</button>
+        <button class="chip-btn" onclick="setBookFilter('advanced', this)">📕 高級 (22章)</button>
       </div>
 
-      <div class="quiz-card" id="quiz-container">
-        <!-- Content will be rendered dynamically -->
+      <!-- Question Card Body -->
+      <div id="quiz-arena">
+        <!-- Rendered dynamically -->
       </div>
     </section>
 
-    <!-- Grammar Reference / Cheatsheet View -->
-    <section id="view-reference" class="reference-section">
-      <div class="ref-grid" id="ref-container">
-        <!-- Reference cards will be rendered dynamically -->
+    <!-- View 2: Cheatsheet / Reference -->
+    <section id="screen-reference" class="reference-screen">
+      <input type="text" class="ref-search-input" id="ref-search" placeholder="🔍 搜尋文法辨析（如：통에, 텐데, 이/가）" oninput="filterReferences()">
+      <div id="ref-list-container">
+        <!-- Rendered dynamically -->
       </div>
     </section>
 
-    <!-- Mistakes View -->
-    <section id="view-mistakes" class="mistakes-section">
-      <div id="mistakes-container">
-        <!-- Mistakes will be rendered dynamically -->
+    <!-- View 3: Mistakes Screen -->
+    <section id="screen-mistakes" class="mistakes-screen">
+      <div id="mistakes-list-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- View 4: Stats Screen -->
+    <section id="screen-stats" class="stats-screen">
+      <div class="stats-grid">
+        <div class="stat-card-big">
+          <div class="num" id="stat-total-score">0</div>
+          <div class="label">累計經驗 (XP)</div>
+        </div>
+        <div class="stat-card-big">
+          <div class="num" id="stat-max-streak">0</div>
+          <div class="label">最高連勝 (Streak)</div>
+        </div>
+        <div class="stat-card-big">
+          <div class="num" id="stat-answered">0</div>
+          <div class="label">已做題數</div>
+        </div>
+        <div class="stat-card-big">
+          <div class="num" id="stat-accuracy">0%</div>
+          <div class="label">總體正確率</div>
+        </div>
+      </div>
+
+      <div class="prompt-bubble" style="text-align:center;">
+        <h4 style="margin-bottom:8px;">💡 iPhone 溫習技巧</h4>
+        <p style="font-size:0.9rem; color:var(--text-muted); line-height:1.6;">
+          您可以點擊 Safari 底部的「分享 (Share)」按鈕，然後選擇<strong>「加入主畫面 (Add to Home Screen)」</strong>，即可像原生 App 一樣以全螢幕體驗溫習韓文！
+        </p>
+        <button class="btn-continue" style="background:#64748b; margin-top:14px; height:44px; font-size:0.92rem;" onclick="resetAllStats()">🔄 重置所有進度與記錄</button>
       </div>
     </section>
   </main>
 
+  <!-- Duolingo Slide-up Bottom Drawer -->
+  <div class="feedback-sheet" id="feedback-drawer">
+    <div class="feedback-header-row">
+      <div class="feedback-icon" id="fb-icon">✅</div>
+      <div class="feedback-title" id="fb-title">대단해요! (做得好！)</div>
+    </div>
+    <div class="feedback-correct-answer" id="fb-answer"></div>
+    <div class="feedback-explanation" id="fb-expl"></div>
+    <button class="btn-continue" id="fb-continue-btn" onclick="nextQuestion()">繼續 (Continue) ➔</button>
+  </div>
+
+  <!-- iOS Fixed Bottom Navigation Tab Bar -->
+  <nav class="tab-bar">
+    <button class="tab-item active" onclick="switchMobileTab('practice', this)">
+      <span class="tab-icon">🎯</span>
+      <span>練習</span>
+    </button>
+    <button class="tab-item" onclick="switchMobileTab('reference', this)">
+      <span class="tab-icon">📖</span>
+      <span>速查</span>
+    </button>
+    <button class="tab-item" onclick="switchMobileTab('mistakes', this)">
+      <span class="tab-icon">📌</span>
+      <span>錯題本</span>
+    </button>
+    <button class="tab-item" onclick="switchMobileTab('stats', this)">
+      <span class="tab-icon">📊</span>
+      <span>成就</span>
+    </button>
+  </nav>
+
   <script>
-    // --- Data Definitions ---
+    // --- Data Injected ---
     const RAW_QUESTIONS = [
   {
     "id": "beg_gr_01",
@@ -2581,72 +2750,138 @@
   }
 ];
 
+    // --- Sound Synthesis (Web Audio API - Zero External Dependencies) ---
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playPopSound() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.08);
+      } catch(e) {}
+    }
+
+    function playSuccessChime() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (Bright Major Chord)
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          const startTime = ctx.currentTime + (idx * 0.07);
+          gain.gain.setValueAtTime(0, startTime);
+          gain.gain.linearRampToValueAtTime(0.2, startTime + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + 0.35);
+        });
+      } catch(e) {}
+    }
+
+    function playWrongBuzzer() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.18, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.25);
+      } catch(e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('sound-toggle-btn');
+      btn.textContent = soundEnabled ? '🔊' : '🔇';
+      if (soundEnabled) playPopSound();
+    }
+
     // --- State Management ---
+    let currentBookFilter = 'all';
     let currentQuestions = [...RAW_QUESTIONS];
     let currentIndex = 0;
     let answered = false;
-    let stats = {
-      score: 0,
+
+    let userState = {
+      xp: 0,
       streak: 0,
+      maxStreak: 0,
+      hearts: 5,
       totalAnswered: 0,
       totalCorrect: 0,
       mistakeIds: []
     };
 
-    // Load stats from LocalStorage
-    function loadStorage() {
+    function loadState() {
       try {
-        const saved = localStorage.getItem('kg_stats');
+        const saved = localStorage.getItem('kg_mobile_state');
         if (saved) {
-          stats = Object.assign(stats, JSON.parse(saved));
-          updateStatsDisplay();
+          userState = Object.assign(userState, JSON.parse(saved));
         }
-      } catch (e) {
-        console.warn('Storage load failed', e);
-      }
+      } catch(e) {}
+      updateHeaderStats();
     }
 
-    function saveStorage() {
+    function saveState() {
       try {
-        localStorage.setItem('kg_stats', JSON.stringify(stats));
-      } catch (e) {
-        console.warn('Storage save failed', e);
-      }
+        localStorage.setItem('kg_mobile_state', JSON.stringify(userState));
+      } catch(e) {}
+      updateHeaderStats();
     }
 
-    function updateStatsDisplay() {
-      document.getElementById('score-count').textContent = stats.score;
-      document.getElementById('streak-count').textContent = stats.streak;
-      const acc = stats.totalAnswered > 0 ? Math.round((stats.totalCorrect / stats.totalAnswered) * 100) : 0;
-      document.getElementById('accuracy-rate').textContent = acc + '%';
+    function updateHeaderStats() {
+      document.getElementById('streak-count').textContent = userState.streak;
+      document.getElementById('xp-count').textContent = userState.xp;
+      document.getElementById('hearts-count').textContent = userState.hearts;
+
+      document.getElementById('stat-total-score').textContent = userState.xp;
+      document.getElementById('stat-max-streak').textContent = userState.maxStreak;
+      document.getElementById('stat-answered').textContent = userState.totalAnswered;
+      const acc = userState.totalAnswered > 0 ? Math.round((userState.totalCorrect / userState.totalAnswered) * 100) : 0;
+      document.getElementById('stat-accuracy').textContent = acc + '%';
     }
 
-    function populateUnitSelect() {
-      const bookFilter = document.getElementById('book-select').value;
-      const unitSelect = document.getElementById('unit-select');
-      const units = new Set();
-      RAW_QUESTIONS.forEach(q => {
-        if (bookFilter === 'all' || q.book === bookFilter) {
-          units.add(q.unit);
-        }
-      });
-      unitSelect.innerHTML = '<option value="all">所有章節類別 (' + units.size + ' 個)</option>';
-      units.forEach(u => {
-        const opt = document.createElement('option');
-        opt.value = u;
-        opt.textContent = u;
-        unitSelect.appendChild(opt);
-      });
-    }
-
-    function onFilterChange() {
-      const bookFilter = document.getElementById('book-select').value;
-      const unitFilter = document.getElementById('unit-select').value;
+    function setBookFilter(book, btn) {
+      playPopSound();
+      currentBookFilter = book;
+      document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
 
       currentQuestions = RAW_QUESTIONS.filter(q => {
-        const matchBook = (bookFilter === 'all' || q.book === bookFilter);
-        const matchUnit = (unitFilter === 'all' || q.unit === unitFilter);
-        return matchBook && matchUnit;
+        return book === 'all' || q.book === book;
       });
 
       if (currentQuestions.length === 0) {
@@ -2655,6 +2890,135 @@
 
       currentIndex = 0;
       renderCurrentQuestion();
+    }
+
+    function renderCurrentQuestion() {
+      const arena = document.getElementById('quiz-arena');
+      const progressBar = document.getElementById('progress-bar');
+      const drawer = document.getElementById('feedback-drawer');
+      drawer.classList.remove('open');
+      answered = false;
+
+      if (currentQuestions.length === 0) {
+        arena.innerHTML = '<div style="text-align:center; padding:40px;"><h3>沒有相應題目</h3></div>';
+        return;
+      }
+
+      const q = currentQuestions[currentIndex];
+      const progressPercent = ((currentIndex + 1) / currentQuestions.length) * 100;
+      progressBar.style.width = progressPercent + '%';
+
+      let badgeClass = 'badge-beg';
+      if (q.book === 'intermediate') badgeClass = 'badge-mid';
+      if (q.book === 'advanced') badgeClass = 'badge-adv';
+
+      let optionsHtml = '';
+      q.options.forEach((opt, idx) => {
+        optionsHtml += `
+          <button class="chunky-option" id="opt-${idx}" onclick="handleOptionSelect(${idx})">
+            <div class="option-key">${idx + 1}</div>
+            <div style="flex:1;">${escapeHtml(opt)}</div>
+          </button>
+        `;
+      });
+
+      arena.innerHTML = `
+        <div class="unit-tag-row">
+          <span class="level-badge ${badgeClass}">${escapeHtml(q.level)}</span>
+          <span class="unit-title-text">${escapeHtml(q.unit)}</span>
+          <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">${currentIndex + 1} / ${currentQuestions.length}</span>
+        </div>
+
+        <div class="prompt-bubble">
+          <div class="prompt-header">
+            <span class="prompt-label">題目練習</span>
+            <button class="speaker-btn" onclick="speakKorean('${escapeForJs(q.question)}')">🔊 聆聽發音</button>
+          </div>
+          <div class="question-dialogue">${formatQuestionText(q.question)}</div>
+        </div>
+
+        <div class="options-container">
+          ${optionsHtml}
+        </div>
+      `;
+    }
+
+    function handleOptionSelect(selectedIdx) {
+      if (answered) return;
+      answered = true;
+
+      const q = currentQuestions[currentIndex];
+      const isCorrect = (selectedIdx === q.answer);
+      const drawer = document.getElementById('feedback-drawer');
+      const fbIcon = document.getElementById('fb-icon');
+      const fbTitle = document.getElementById('fb-title');
+      const fbAns = document.getElementById('fb-answer');
+      const fbExpl = document.getElementById('fb-expl');
+
+      // Haptic
+      if (navigator.vibrate) {
+        navigator.vibrate(isCorrect ? 25 : [40, 60, 40]);
+      }
+
+      // Button Visual Feedback
+      q.options.forEach((_, idx) => {
+        const btn = document.getElementById('opt-' + idx);
+        btn.disabled = true;
+        if (idx === q.answer) {
+          btn.classList.add('correct-reveal');
+        } else if (idx === selectedIdx && !isCorrect) {
+          btn.classList.add('wrong-reveal');
+        }
+      });
+
+      // Update State
+      userState.totalAnswered++;
+      if (isCorrect) {
+        userState.xp += 10;
+        userState.streak++;
+        if (userState.streak > userState.maxStreak) userState.maxStreak = userState.streak;
+        userState.totalCorrect++;
+        playSuccessChime();
+
+        drawer.className = 'feedback-sheet correct open';
+        fbIcon.textContent = '🎉';
+        fbTitle.textContent = '대단해요! (答對了！)';
+        fbAns.textContent = '獲取 +10 XP';
+      } else {
+        userState.streak = 0;
+        if (userState.hearts > 1) userState.hearts--;
+        if (!userState.mistakeIds.includes(q.id)) {
+          userState.mistakeIds.push(q.id);
+        }
+        playWrongBuzzer();
+
+        drawer.className = 'feedback-sheet wrong open';
+        fbIcon.textContent = '💭';
+        fbTitle.textContent = '아쉬워요! (再接再厲！)';
+        fbAns.innerHTML = '正確答案是：<strong>' + (q.answer + 1) + '. ' + escapeHtml(q.options[q.answer]) + '</strong>';
+      }
+
+      fbExpl.innerHTML = `
+        <div style="margin-bottom:6px;"><strong>文法解析：</strong>${escapeHtml(q.explanation)}</div>
+        ${q.notes ? `<div style="padding:8px 12px; background:rgba(0,0,0,0.05); border-radius:8px; font-size:0.84rem; white-space:pre-line;"><strong>💡 考點規範：</strong>
+${escapeHtml(q.notes)}</div>` : ''}
+      `;
+
+      saveState();
+    }
+
+    function nextQuestion() {
+      playPopSound();
+      const drawer = document.getElementById('feedback-drawer');
+      drawer.classList.remove('open');
+
+      if (currentIndex < currentQuestions.length - 1) {
+        currentIndex++;
+        renderCurrentQuestion();
+      } else {
+        alert('恭喜你完成了當前組別的所有練習！🎉');
+        shuffleCurrentQuestions();
+      }
     }
 
     function shuffleCurrentQuestions() {
@@ -2666,295 +3030,163 @@
       renderCurrentQuestion();
     }
 
-    function resetProgress() {
-      if (confirm('確定重置所有練習進度與錯題記錄嗎？')) {
-        stats = { score: 0, streak: 0, totalAnswered: 0, totalCorrect: 0, mistakeIds: [] };
-        saveStorage();
-        updateStatsDisplay();
-        currentIndex = 0;
-        renderCurrentQuestion();
-        renderMistakes();
-      }
-    }
-
-    // TTS pronunciation using SpeechSynthesis
     function speakKorean(text) {
       if ('speechSynthesis' in window) {
-        // Extract Korean text only for cleaner pronunciation
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'ko-KR';
-        utterance.rate = 0.9;
+        utterance.rate = 0.88;
         window.speechSynthesis.speak(utterance);
-      } else {
-        alert('您的瀏覽器不支援語音合成功能。');
       }
     }
 
-    // Render Question
-    function renderCurrentQuestion() {
-      const container = document.getElementById('quiz-container');
-      const progressBar = document.getElementById('progress-bar');
-      
-      if (currentQuestions.length === 0) {
-        container.innerHTML = '<div class="empty-state"><h3>目前篩選條件下沒有題目</h3></div>';
-        return;
-      }
+    // --- Tab Switching ---
+    function switchMobileTab(tab, el) {
+      playPopSound();
+      document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
 
-      const q = currentQuestions[currentIndex];
-      const progressPercent = ((currentIndex + 1) / currentQuestions.length) * 100;
-      progressBar.style.width = progressPercent + '%';
-      answered = false;
+      document.getElementById('screen-practice').style.display = (tab === 'practice') ? 'flex' : 'none';
+      document.getElementById('screen-reference').style.display = (tab === 'reference') ? 'block' : 'none';
+      document.getElementById('screen-mistakes').style.display = (tab === 'mistakes') ? 'block' : 'none';
+      document.getElementById('screen-stats').style.display = (tab === 'stats') ? 'block' : 'none';
 
-      const isBookBeg = q.book === 'beginner';
-      const levelBadgeClass = isBookBeg ? 'badge-beginner' : 'badge-advanced';
-
-      let optionsHtml = '';
-      q.options.forEach((opt, idx) => {
-        optionsHtml += `
-          <button class="option-btn" id="opt-btn-${idx}" onclick="handleSelectOption(${idx})">
-            <span><strong>${idx + 1}.</strong> ${escapeHtml(opt)}</span>
-          </button>
-        `;
-      });
-
-      container.innerHTML = `
-        <div class="card-meta">
-          <div>
-            <span class="badge-pill ${levelBadgeClass}">${escapeHtml(q.level)}</span>
-            <span class="badge-pill badge-unit">${escapeHtml(q.unit)}</span>
-          </div>
-          <div class="q-progress">題目 ${currentIndex + 1} / ${currentQuestions.length}</div>
-        </div>
-
-        <h3 class="question-title">
-          ${escapeHtml(q.title)}
-          <button class="tts-btn" onclick="speakKorean('${escapeForJs(q.question)}')">🔊 發音</button>
-        </h3>
-
-        <div class="question-body">${formatQuestionText(q.question)}</div>
-
-        <div class="options-grid">
-          ${optionsHtml}
-        </div>
-
-        <div class="explanation-panel" id="exp-panel">
-          <div class="explanation-header" id="exp-header"></div>
-          <div class="explanation-text" id="exp-text"></div>
-          ${q.notes ? `<div class="grammar-note-box"><strong>💡 文法規則 & 易混淆點：</strong>\n${escapeHtml(q.notes)}</div>` : ''}
-        </div>
-
-        <div class="quiz-footer">
-          <button class="action-btn" onclick="bookmarkMistake('${q.id}')">🔖 收藏/加入錯題本</button>
-          <button class="action-btn primary" id="next-q-btn" onclick="nextQuestion()" style="display:none;">下一題 ➔</button>
-        </div>
-      `;
+      if (tab === 'reference') renderReferencesList(GRAMMAR_REFERENCES);
+      if (tab === 'mistakes') renderMistakesList();
     }
 
-    function handleSelectOption(selectedIdx) {
-      if (answered) return;
-      answered = true;
-
-      const q = currentQuestions[currentIndex];
-      const isCorrect = (selectedIdx === q.answer);
-      const expPanel = document.getElementById('exp-panel');
-      const expHeader = document.getElementById('exp-header');
-      const expText = document.getElementById('exp-text');
-      const nextBtn = document.getElementById('next-q-btn');
-
-      // Update button styles
-      q.options.forEach((opt, idx) => {
-        const btn = document.getElementById('opt-btn-' + idx);
-        btn.disabled = true;
-        if (idx === q.answer) {
-          btn.classList.add(isCorrect ? 'selected-correct' : 'reveal-correct');
-        } else if (idx === selectedIdx && !isCorrect) {
-          btn.classList.add('selected-wrong');
-        }
-      });
-
-      // Update Stats
-      stats.totalAnswered++;
-      if (isCorrect) {
-        stats.score += 10;
-        stats.streak++;
-        stats.totalCorrect++;
-        expHeader.className = 'explanation-header correct';
-        expHeader.innerHTML = '✅ 回答正確！ (+10 分)';
-      } else {
-        stats.streak = 0;
-        expHeader.className = 'explanation-header wrong';
-        expHeader.innerHTML = '❌ 回答錯誤！ 正確答案是：<strong>' + (q.answer + 1) + '. ' + escapeHtml(q.options[q.answer]) + '</strong>';
-        if (!stats.mistakeIds.includes(q.id)) {
-          stats.mistakeIds.push(q.id);
-        }
-      }
-
-      expText.textContent = q.explanation;
-      expPanel.style.display = 'block';
-      nextBtn.style.display = 'inline-block';
-
-      saveStorage();
-      updateStatsDisplay();
-    }
-
-    function nextQuestion() {
-      if (currentIndex < currentQuestions.length - 1) {
-        currentIndex++;
-      } else {
-        alert('恭喜你完成了本組別的所有題目！點擊「確定」重新洗牌練習。');
-        shuffleCurrentQuestions();
-      }
-      renderCurrentQuestion();
-    }
-
-    function bookmarkMistake(id) {
-      if (!stats.mistakeIds.includes(id)) {
-        stats.mistakeIds.push(id);
-        alert('已將此題加入錯題重點庫！');
-      } else {
-        alert('此題已經在錯題庫中。');
-      }
-      saveStorage();
-    }
-
-    // Tab Switching
-    function switchView(view) {
-      document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
-      const buttons = document.querySelectorAll('.nav-tab-btn');
-      if (view === 'practice') buttons[0].classList.add('active');
-      if (view === 'reference') buttons[1].classList.add('active');
-      if (view === 'mistakes') buttons[2].classList.add('active');
-
-      document.getElementById('view-practice').style.display = (view === 'practice') ? 'block' : 'none';
-      document.getElementById('practice-filters').style.display = (view === 'practice') ? 'flex' : 'none';
-      document.getElementById('view-reference').style.display = (view === 'reference') ? 'block' : 'none';
-      document.getElementById('view-mistakes').style.display = (view === 'mistakes') ? 'block' : 'none';
-
-      if (view === 'reference') renderReferences();
-      if (view === 'mistakes') renderMistakes();
-    }
-
-    // Render References
-    function renderReferences() {
-      const container = document.getElementById('ref-container');
+    function renderReferencesList(refs) {
+      const c = document.getElementById('ref-list-container');
       let html = '';
-      GRAMMAR_REFERENCES.forEach(ref => {
+      refs.forEach(ref => {
+        let tableHtml = '';
+        if (ref.table) {
+          let ths = ref.table.headers.map(h => `<th>${escapeHtml(h)}</th>`).join('');
+          let trs = ref.table.rows.map(r => `<tr>${r.map(cell => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('');
+          tableHtml = `<div class="mobile-table-scroll"><table class="mobile-table"><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table></div>`;
+        }
+
         html += `
-          <div class="ref-card">
-            <div class="ref-title">
-              ${escapeHtml(ref.title)}
-              <span class="ref-badge">${escapeHtml(ref.level)}</span>
+          <div class="ref-card-mobile">
+            <div class="ref-card-title">
+              <span>${escapeHtml(ref.title)}</span>
+              <span class="level-badge badge-beg" style="font-size:0.75rem;">${escapeHtml(ref.level)}</span>
             </div>
-            <div class="ref-content">
-              <p><strong>說明：</strong>${escapeHtml(ref.summary)}</p>
-              ${ref.table ? renderRefTable(ref.table) : ''}
-              ${ref.examples ? ref.examples.map(ex => `<div class="example-tag">${escapeHtml(ex)}</div>`).join('') : ''}
-              ${ref.nuance ? `<div class="grammar-note-box" style="margin-top:8px;"><strong>⚡ 辨析與考點：</strong>\n${escapeHtml(ref.nuance)}</div>` : ''}
-            </div>
+            <p style="font-size:0.88rem; color:#475569; margin-bottom:8px;">${escapeHtml(ref.summary)}</p>
+            ${tableHtml}
+            ${ref.examples ? ref.examples.map(ex => `<div style="font-size:0.86rem; background:#f8fafc; padding:6px 10px; border-left:3px solid #6366f1; border-radius:4px; margin:4px 0;">${escapeHtml(ex)}</div>`).join('') : ''}
+            ${ref.nuance ? `<div style="font-size:0.84rem; background:#fef3c7; color:#92400e; padding:8px 10px; border-radius:6px; margin-top:8px; white-space:pre-line;"><strong>⚡ 考點重點：</strong>
+${escapeHtml(ref.nuance)}</div>` : ''}
           </div>
         `;
       });
-      container.innerHTML = html;
+      c.innerHTML = html;
     }
 
-    function renderRefTable(table) {
-      let ths = table.headers.map(h => `<th>${escapeHtml(h)}</th>`).join('');
-      let trs = table.rows.map(row => `<tr>${row.map(cell => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('');
-      return `<table class="ref-table"><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+    function filterReferences() {
+      const q = document.getElementById('ref-search').value.toLowerCase();
+      const filtered = GRAMMAR_REFERENCES.filter(r => {
+        return r.title.toLowerCase().includes(q) || r.summary.toLowerCase().includes(q) || (r.nuance && r.nuance.toLowerCase().includes(q));
+      });
+      renderReferencesList(filtered);
     }
 
-    // Render Mistakes
-    function renderMistakes() {
-      const container = document.getElementById('mistakes-container');
-      const mistakeList = RAW_QUESTIONS.filter(q => stats.mistakeIds.includes(q.id));
+    function renderMistakesList() {
+      const c = document.getElementById('mistakes-list-container');
+      const mistakes = RAW_QUESTIONS.filter(q => userState.mistakeIds.includes(q.id));
 
-      if (mistakeList.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">🎉</div>
+      if (mistakes.length === 0) {
+        c.innerHTML = `
+          <div style="text-align:center; padding:60px 20px;">
+            <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
             <h3>目前沒有錯題記錄！</h3>
-            <p>做錯的題目會自動匯總於此處，方便隨時複習強化記憶。</p>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-top:6px;">做錯的題目會自動記錄在此處，隨時進行專項強化複習。</p>
           </div>
         `;
         return;
       }
 
       let html = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-          <h3>錯題清單 (${mistakeList.length} 題)</h3>
-          <div>
-            <button class="action-btn primary" onclick="practiceMistakes()">🎯 針對錯題專題特訓</button>
-            <button class="action-btn" onclick="clearMistakes()">🗑️ 清空錯題</button>
-          </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h3 style="font-size:1.1rem; font-weight:800;">錯題重點清單 (${mistakes.length} 題)</h3>
+          <button class="chip-btn" style="padding:4px 10px; font-size:0.75rem;" onclick="clearAllMistakes()">清空記錄</button>
         </div>
       `;
 
-      mistakeList.forEach((q, idx) => {
+      mistakes.forEach((q, idx) => {
         html += `
-          <div class="quiz-card" style="margin-bottom:16px; padding:20px;">
-            <div class="card-meta">
-              <span class="badge-pill ${q.book === 'beginner' ? 'badge-beginner' : 'badge-advanced'}">${escapeHtml(q.level)}</span>
-              <span class="badge-pill badge-unit">${escapeHtml(q.unit)}</span>
+          <div class="ref-card-mobile" style="margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span class="level-badge badge-beg">${escapeHtml(q.level)}</span>
+              <button style="background:none; border:none; color:#ef4444; font-size:0.8rem; font-weight:700;" onclick="removeMistake('${q.id}')">已掌握 ✓</button>
             </div>
-            <h4 style="margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.title)}</h4>
-            <div class="question-body" style="font-size:0.95rem; padding:12px 16px;">${formatQuestionText(q.question)}</div>
-            <div style="font-size:0.92rem; color:#059669; font-weight:700; margin-bottom:6px;">
-              正確答案：${q.answer + 1}. ${escapeHtml(q.options[q.answer])}
-            </div>
-            <div style="font-size:0.9rem; color:#475569; margin-bottom:8px;">${escapeHtml(q.explanation)}</div>
-            <button class="action-btn" style="padding:4px 10px; font-size:0.8rem;" onclick="removeSingleMistake('${q.id}')">已掌握（移除）</button>
+            <div style="font-size:0.95rem; font-weight:700; margin-bottom:6px; color:#1e293b;">${idx + 1}. ${escapeHtml(q.title)}</div>
+            <div style="font-size:0.9rem; background:#f8fafc; padding:8px 12px; border-radius:8px; margin-bottom:8px; white-space:pre-line;">${formatQuestionText(q.question)}</div>
+            <div style="font-size:0.88rem; color:#15803d; font-weight:700; margin-bottom:4px;">正確答案：${q.answer + 1}. ${escapeHtml(q.options[q.answer])}</div>
+            <div style="font-size:0.85rem; color:#64748b;">${escapeHtml(q.explanation)}</div>
           </div>
         `;
       });
 
-      container.innerHTML = html;
+      c.innerHTML = html;
     }
 
-    function practiceMistakes() {
-      const mistakeList = RAW_QUESTIONS.filter(q => stats.mistakeIds.includes(q.id));
-      if (mistakeList.length === 0) return;
-      currentQuestions = [...mistakeList];
-      currentIndex = 0;
-      switchView('practice');
+    function removeMistake(id) {
+      userState.mistakeIds = userState.mistakeIds.filter(m => m !== id);
+      saveState();
+      renderMistakesList();
     }
 
-    function clearMistakes() {
-      if (confirm('確定清空所有錯題記錄嗎？')) {
-        stats.mistakeIds = [];
-        saveStorage();
-        renderMistakes();
+    function clearAllMistakes() {
+      if (confirm('確定清空所有錯題？')) {
+        userState.mistakeIds = [];
+        saveState();
+        renderMistakesList();
       }
     }
 
-    function removeSingleMistake(id) {
-      stats.mistakeIds = stats.mistakeIds.filter(mid => mid !== id);
-      saveStorage();
-      renderMistakes();
+    function resetAllStats() {
+      if (confirm('確定重置所有經驗值、連勝與記錄？')) {
+        userState = { xp: 0, streak: 0, maxStreak: 0, hearts: 5, totalAnswered: 0, totalCorrect: 0, mistakeIds: [] };
+        saveState();
+        alert('記錄已全部重置！');
+      }
     }
 
-    // Helper utilities
+    function openChapterModal() {
+      const units = [...new Set(RAW_QUESTIONS.map(q => q.unit))];
+      const choice = prompt('請輸入要篩選的單元關鍵字（例如：추측, 이유, 조사, 1장），或留空顯示全部：');
+      if (choice === null) return;
+      if (choice.trim() === '') {
+        currentQuestions = [...RAW_QUESTIONS];
+      } else {
+        currentQuestions = RAW_QUESTIONS.filter(q => q.unit.toLowerCase().includes(choice.trim().toLowerCase()));
+      }
+      if (currentQuestions.length === 0) {
+        alert('找不到符合該關鍵字的單元，已還原全部題目。');
+        currentQuestions = [...RAW_QUESTIONS];
+      }
+      currentIndex = 0;
+      renderCurrentQuestion();
+    }
+
+    // --- Helpers ---
     function escapeHtml(str) {
       if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     function escapeForJs(str) {
       if (!str) return '';
-      return String(str).replace(/'/g, "\\'").replace(/\\n/g, ' ');
+      return String(str).replace(/'/g, "\'").replace(/\n/g, ' ');
     }
 
     function formatQuestionText(text) {
-      return escapeHtml(text).replace(/\\n/g, '<br>');
+      return escapeHtml(text).replace(/\n/g, '<br>');
     }
 
-    // Initialization
+    // Init
     window.addEventListener('DOMContentLoaded', () => {
-      loadStorage();
-      populateUnitSelect();
+      loadState();
       renderCurrentQuestion();
     });
   </script>
