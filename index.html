@@ -1,0 +1,1935 @@
+﻿<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Korean Grammar Interactive Master · 韓語文法互動學習系統</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --secondary: #0ea5e9;
+      --secondary-light: #f0f9ff;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --danger: #ef4444;
+      --danger-light: #fef2f2;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 14px;
+      --shadow: 0 4px 12px -2px rgba(0,0,0,0.06), 0 2px 6px -1px rgba(0,0,0,0.04);
+      --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.08), 0 4px 10px -2px rgba(0,0,0,0.04);
+    }
+
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+    }
+
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+
+    header {
+      background: linear-gradient(135deg, #312e81 0%, #4338ca 50%, #4f46e5 100%);
+      color: white;
+      padding: 30px 20px 24px;
+      box-shadow: 0 4px 20px rgba(79, 70, 229, 0.2);
+    }
+
+
+    .header-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+
+    .header-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+
+    .app-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+
+    .app-subtitle {
+      font-size: 0.95rem;
+      opacity: 0.85;
+      font-weight: 400;
+    }
+
+
+    .top-stats {
+      display: flex;
+      gap: 12px;
+    }
+
+
+    .stat-badge {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+
+    /* Navigation Bar */
+    nav.nav-tabs {
+      display: flex;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.18);
+      padding: 6px;
+      border-radius: 12px;
+      margin-top: 6px;
+      overflow-x: auto;
+    }
+
+
+    .nav-tab-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.8);
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+
+    .nav-tab-btn:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+
+    .nav-tab-btn.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+
+    /* Main Container */
+    main {
+      max-width: 1000px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+
+
+    /* Filter Controls */
+    .filter-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+
+    .filter-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+
+    select, button.action-btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: white;
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+
+    .action-btn.primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+
+
+    .action-btn.primary:hover {
+      background: var(--primary-hover);
+    }
+
+
+    /* Quiz Card */
+    .quiz-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 28px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+
+    .badge-pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+
+    .badge-beginner {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+
+    .badge-advanced {
+      background: #fce7f3;
+      color: #9d174d;
+    }
+
+
+    .badge-unit {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+
+    .q-progress {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+
+    .question-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+
+    .question-body {
+      background: var(--bg);
+      border-left: 4px solid var(--primary);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 1.1rem;
+      margin-bottom: 24px;
+      white-space: pre-line;
+      line-height: 1.7;
+    }
+
+
+    .tts-btn {
+      background: rgba(79, 70, 229, 0.1);
+      border: none;
+      color: var(--primary);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+
+    .tts-btn:hover {
+      background: rgba(79, 70, 229, 0.2);
+    }
+
+
+    /* Options List */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+
+    @media (min-width: 640px) {
+      .options-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+
+    .option-btn {
+      text-align: left;
+      padding: 14px 18px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      background: white;
+      font-size: 1rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+
+    .option-btn.selected-correct {
+      border-color: var(--success);
+      background: var(--success-light);
+      color: #065f46;
+      font-weight: 700;
+    }
+
+
+    .option-btn.selected-wrong {
+      border-color: var(--danger);
+      background: var(--danger-light);
+      color: #991b1b;
+      font-weight: 700;
+    }
+
+
+    .option-btn.reveal-correct {
+      border-color: var(--success);
+      background: #f0fdf4;
+      border-style: dashed;
+    }
+
+
+    /* Explanation Panel */
+    .explanation-panel {
+      display: none;
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      animation: fadeIn 0.3s ease;
+    }
+
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+
+    .explanation-header {
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+
+    .explanation-header.correct {
+      color: #059669;
+    }
+
+
+    .explanation-header.wrong {
+      color: #dc2626;
+    }
+
+
+    .explanation-text {
+      font-size: 0.95rem;
+      color: #334155;
+      margin-bottom: 12px;
+      white-space: pre-line;
+    }
+
+
+    .grammar-note-box {
+      background: white;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 0.88rem;
+      color: #475569;
+      white-space: pre-line;
+    }
+
+
+    .quiz-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+
+    /* Reference & Cheatsheet Styles */
+    .reference-section {
+      display: none;
+    }
+
+
+    .ref-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+
+    @media (min-width: 768px) {
+      .ref-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+
+    .ref-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 22px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+
+    .ref-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+
+    .ref-badge {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+
+    .ref-content {
+      font-size: 0.92rem;
+      color: #334155;
+      line-height: 1.6;
+    }
+
+
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0;
+      font-size: 0.88rem;
+    }
+
+
+    .ref-table th, .ref-table td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+
+    .ref-table th {
+      background: #f1f5f9;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+
+    .example-tag {
+      background: #f8fafc;
+      border-left: 3px solid #6366f1;
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.88rem;
+      margin: 4px 0;
+    }
+
+
+    /* Mistake Review Section */
+    .mistakes-section {
+      display: none;
+    }
+
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+
+
+    /* Progress bar */
+    .progress-bar-container {
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4f46e5, #06b6d4);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+
+  <header>
+    <div class="header-inner">
+      <div class="header-title-row">
+        <div>
+          <h1 class="app-title">🇰🇷 Korean Grammar Interactive Master</h1>
+          <p class="app-subtitle">《Korean Grammar in Use》初級 / 高級互動練習與文法辨析系統</p>
+        </div>
+        <div class="top-stats">
+          <div class="stat-badge" title="連續答對次數">🔥 連勝: <span id="streak-count">0</span></div>
+          <div class="stat-badge" title="累計得分">⭐ 分數: <span id="score-count">0</span></div>
+          <div class="stat-badge" title="完成率">📈 正確率: <span id="accuracy-rate">0%</span></div>
+        </div>
+      </div>
+
+
+      <nav class="nav-tabs">
+        <button class="nav-tab-btn active" onclick="switchView('practice')">✍️ 互動練習 (Practice)</button>
+        <button class="nav-tab-btn" onclick="switchView('reference')">📖 文法辨析與要點速查 (Cheatsheet)</button>
+        <button class="nav-tab-btn" onclick="switchView('mistakes')">📌 錯題本與重點複習 (Mistakes Review)</button>
+      </nav>
+    </div>
+  </header>
+
+
+  <main>
+    <!-- Filter Bar (visible in practice mode) -->
+    <div class="filter-card" id="practice-filters">
+      <div class="filter-group">
+        <span class="filter-label">教材範圍:</span>
+        <select id="book-select" onchange="onFilterChange()">
+          <option value="all">🌟 全部教材 (初級 + 高級)</option>
+          <option value="beginner">📘 初級 (Beginning to Early Intermediate)</option>
+          <option value="advanced">📕 高級 (Advanced)</option>
+        </select>
+      </div>
+
+
+      <div class="filter-group">
+        <span class="filter-label">章節類別:</span>
+        <select id="unit-select" onchange="onFilterChange()">
+          <option value="all">所有章節類別</option>
+        </select>
+      </div>
+
+
+      <div class="filter-group">
+        <button class="action-btn" onclick="shuffleCurrentQuestions()">🔀 隨機洗牌</button>
+        <button class="action-btn" onclick="resetProgress()">🔄 重置記錄</button>
+      </div>
+    </div>
+
+
+    <!-- Practice View -->
+    <section id="view-practice">
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progress-bar"></div>
+      </div>
+
+
+      <div class="quiz-card" id="quiz-container">
+        <!-- Content will be rendered dynamically -->
+      </div>
+    </section>
+
+
+    <!-- Grammar Reference / Cheatsheet View -->
+    <section id="view-reference" class="reference-section">
+      <div class="ref-grid" id="ref-container">
+        <!-- Reference cards will be rendered dynamically -->
+      </div>
+    </section>
+
+
+    <!-- Mistakes View -->
+    <section id="view-mistakes" class="mistakes-section">
+      <div id="mistakes-container">
+        <!-- Mistakes will be rendered dynamically -->
+      </div>
+    </section>
+  </main>
+
+
+  <script>
+    // --- Data Definitions ---
+    const RAW_QUESTIONS = [
+  {
+    "id": "beg_gr_01",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Getting Ready - 01 이다 / 아니다",
+    "title": "이다 / 아니다 (是 / 不是)",
+    "question": "가: 저 사람이 제이슨 씨예요?\n나: 아니요, 제이슨 씨가 ___________. 민우 씨예요.",
+    "options": [
+      "아니에요",
+      "아닙니까",
+      "이에요",
+      "예요"
+    ],
+    "answer": 0,
+    "explanation": "'이/가 아니다' 是 '이다' 的否定型。名詞 '제이슨 씨' 以母音結尾，因此接 '가 아니에요'（非敬語非格式體常用語）。",
+    "notes": "• 名詞有收音 + 이 아니다\n• 名詞無收音 + 가 아니다\n• 是：名詞 + 이에요 (有收音) / 예요 (無收音)"
+  },
+  {
+    "id": "beg_gr_02",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Getting Ready - 02 있다 / 없다 & 方位",
+    "title": "있다 / 없다 (存在、位置與擁有)",
+    "question": "가: 지갑이 어디에 있어요?\n나: 책상 서랍 _________ 있어요.",
+    "options": [
+      "안에",
+      "밖에",
+      "위에",
+      "사이에"
+    ],
+    "answer": 0,
+    "explanation": "書桌抽屜的「裡面」應用 '안에' (책상 서랍 안에 있어요)。'밖' 是外面，'위' 是上面，'사이' 是兩者之間。",
+    "notes": "• 位置詞：위(上), 아래/밑(下), 앞(前), 뒤(後), 안(內), 밖(外), 옆(旁), 사이(間)"
+  },
+  {
+    "id": "beg_gr_03",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Getting Ready - 03 數字與單位量詞",
+    "title": "固有詞數字與量詞縮形",
+    "question": "가: 커피숍에서 무엇을 주문했어요?\n나: 아이스 아메리카노 _________ 잔하고 도넛 _________ 개 샀어요.",
+    "options": [
+      "두 / 네",
+      "둘 / 넷",
+      "이 / 사",
+      "두 / 사"
+    ],
+    "answer": 0,
+    "explanation": "固有詞數字 1(하나), 2(둘), 3(셋), 4(넷), 20(스물) 接量詞時，必須變為 한, 두, 세, 네, 스무。量詞 '잔'(杯)、'개'(個) 前需使用 '두 잔', '네 개'。",
+    "notes": "• 固有詞數量詞：한 명, 두 잔, 세 개, 네 마리, 스무 살\n• 漢字詞：年、月、日、分、電話號碼、價格"
+  },
+  {
+    "id": "beg_gr_04",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Getting Ready - 04/05 時間與日期",
+    "title": "時間的韓語表達法",
+    "question": "현재 시각이 \"08:45 AM\"일 때, 알맞은 한국어 표현은?",
+    "options": [
+      "오전 여덟 시 사십오 분 (오전 아홉 시 십오 분 전)",
+      "오후 팔 시 사십오 분",
+      "오전 팔 시 사십오 분",
+      "오후 여덟 시 마흔다섯 분"
+    ],
+    "answer": 0,
+    "explanation": "韓語中「時(시)」用固有詞（여덟 시），「分(분)」用漢字詞（사십오 분）。8點45分亦常表達成「9點差15分」(아홉 시 십오 분 전)。",
+    "notes": "• 時 = 固有詞 (한, 두, 세, 네, 다섯, 여섯, 일곱, 여덟, 아홉, 열, 열한, 열두)\n• 分 = 漢字詞 (십, 이십, 삼십, 사십, 오십...)"
+  },
+  {
+    "id": "beg_u1_01",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Unit 1. Tenses - 01/02 現在式",
+    "title": "現在式：-아/어요 母音縮合規則",
+    "question": "다음 중 동사/형용사의 현재형(-아/어요) 불규칙/축약이 잘못된 것은?",
+    "options": [
+      "배우다 → 배워요",
+      "마시다 → 마셔요",
+      "만들다 → 만들어요",
+      "가르치다 → 가르치어요"
+    ],
+    "answer": 3,
+    "explanation": "'가르치다' 詞幹以 'ㅣ' 結尾，與 '-어요' 結合時應縮合為 '가르쳐요'，而不是保持 '가르치어요'。",
+    "notes": "• ㅏ, ㅗ 結尾 → -아요 (보다 → 봐요, 가다 → 가요)\n• 其他母音結尾 → -어요 (배우다 → 배워요, 마시다 → 마셔요, 가르치다 → 가르쳐요)\n• 하다 → 해요"
+  },
+  {
+    "id": "beg_u1_02",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Unit 1. Tenses - 03/06 過去式與過去完成式",
+    "title": "-았/었어요 vs -았/었었어요 語氣差異",
+    "question": "가: 수진 씨는 지금 한국에 살아요?\n나: 아니요, 작년까지 한국에 ___________. 지금은 미국으로 돌아갔어요.",
+    "options": [
+      "살았었어요",
+      "살아요",
+      "살고 있어요",
+      "살 거예요"
+    ],
+    "answer": 0,
+    "explanation": "'-았/었었어요' 表示過去曾經存在或發生某狀態，但該狀態在現在已經改變或中斷（斷絕）。對話明確指出「現在已經回美國了」，因此用 '살았었어요' 最恰當。",
+    "notes": "• -았/었어요: 過去某時發生的單純事實，該狀態目前可能仍在持續。\n• -았/었었어요: 過去曾如此，但現在已經不再是那種狀態（與現在對比/已中斷）。"
+  },
+  {
+    "id": "beg_u1_03",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Unit 1. Tenses - 04 未來式 -(으)ㄹ 거예요",
+    "title": "未來計畫與意圖 -(으)ㄹ 거예요",
+    "question": "가: 이번 주말에 약속이 있어요?\n나: 네, 친구와 같이 시내에서 영화를 ___________.",
+    "options": [
+      "볼 거예요",
+      "봤어요",
+      "보고 싶었어요",
+      "보았을 거예요"
+    ],
+    "answer": 0,
+    "explanation": "詢問這週末的計畫，動詞 '보다' 無尾音，接 '-ㄹ 거예요'，形成 '볼 거예요'。",
+    "notes": "• 詞幹無收音或以 ㄹ 結尾: -ㄹ 거예요 (가다 → 갈 거예요, 만들다 → 만들 거예요)\n• 詞幹有收音: -을 거예요 (먹다 → 먹을 거예요, 읽다 → 읽을 거예요)"
+  },
+  {
+    "id": "beg_u2_01",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Unit 2. Negative Expressions - 안 vs 못",
+    "title": "主觀不想(안) vs 客觀能力/外部阻礙(못)",
+    "question": "가: 오늘 왜 회식에 안 왔어요?\n나: 야근이 너무 많아서 회식에 ___________.",
+    "options": [
+      "못 갔어요",
+      "안 갔어요",
+      "가지 않았어요",
+      "안 가겠어요"
+    ],
+    "answer": 0,
+    "explanation": "'야근이 너무 많아서'(因為加班太多) 是外部客觀條件阻礙，導致無法前往，應使用能力/客觀否定的 '못 갔어요' (或 '가지 못했어요')。",
+    "notes": "• 안 / -지 않다: 主觀意願不想做、單純否定事實\n• 못 / -지 못하다: 缺乏能力或因客觀環境限制而無法做"
+  },
+  {
+    "id": "beg_u3_01",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Unit 3. Particles - 이/가 vs 은/는",
+    "title": "主格助詞(이/가) vs 主題/對比助詞(은/는)",
+    "question": "가: 여기 있는 사람들 중에 ___________ 마이클 씨예요?\n나: 저기 창가에 앉아 있는 사람___________ 마이클 씨예요.",
+    "options": [
+      "누가 / 이",
+      "누가 / 은",
+      "누구는 / 이",
+      "누구는 / 은"
+    ],
+    "answer": 1,
+    "explanation": "在疑問詞（누구, 무엇, 어디）作主語時，通常使用主格助詞 '누가'（누구 + 가 = 누가）；回答時，指出已確定的對象或主題時使用 '사람은'。",
+    "notes": "• 疑問詞作主語: 항상 '이/가' (누가, 무엇이, 어디가)\n• 新引出的焦點主語: 이/가\n• 已知主題、對比: 은/는"
+  },
+  {
+    "id": "beg_u3_02",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Unit 3. Particles - 에 vs 에서",
+    "title": "處所助詞 에 (靜態/方向) vs 에서 (動態行動)",
+    "question": "가: 토요일에 보통 어디___________ 운동해요?\n나: 집 근처 공원___________ 조깅을 해요.",
+    "options": [
+      "에서 / 에서",
+      "에 / 에서",
+      "에서 / 에",
+      "에 / 에"
+    ],
+    "answer": 0,
+    "explanation": "'운동하다' 和 '조깅을 하다' 都是動態行為活動，發生該動作的場所必須接 '에서'。",
+    "notes": "• N에: 存在處所(있다/없다/살다)、到達目標或方向(가다/오다/다니다)\n• N에서: 在該地點進行某動作(공부하다/만나다/운동하다/밥을 먹다)"
+  },
+  {
+    "id": "beg_u3_03",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Unit 3. Particles - 만 vs 밖에",
+    "title": "限定助詞 만 vs 否定伴隨 밖에",
+    "question": "가: 파티에 사람들이 많이 왔어요?\n나: 20명을 초대했는데 5명___________ 안 왔어요.",
+    "options": [
+      "밖에",
+      "만",
+      "이나",
+      "도"
+    ],
+    "answer": 0,
+    "explanation": "後續句為否定型 '안 왔어요'，表示「僅僅只有/除此以外沒有」，必須搭配 '밖에' (5명밖에 안 왔어요)。如果使用 '만'，後面必須接肯定句 (5명만 왔어요)。",
+    "notes": "• N만 + 肯定句 (5명만 왔어요)\n• N밖에 + 否定句 (5명밖에 안 왔어요 / 못 왔어요)\n• 注意：'밖에' 後面絕對不能接肯定句或命令句！"
+  },
+  {
+    "id": "beg_u3_04",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Unit 3. Particles - (으)로",
+    "title": "工具手段與方向助詞 -(으)로",
+    "question": "다음 밑줄 친 '(으)로'의 쓰임 중 성격이 다른 하나는?",
+    "options": [
+      "서울에서 부산까지 KTX 기차로 갔어요. (수단)",
+      "가위로 색종이를 잘랐어요. (도구)",
+      "이 빵은 쌀가루로 만들었어요. (재료)",
+      "약국에서 오른쪽으로 가세요. (방향)"
+    ],
+    "answer": 3,
+    "explanation": "前三個句子中的 '(으)로' 分別表示交通方式（手段）、使用工具（工具）、製作材料（原料）；而第四個句子的 '오른쪽으로' 表示行進的「方向」。",
+    "notes": "• -(으)로 的多元用法：\n1. 交通手段/工具 (버스로, 연필로)\n2. 材料原料 (밀가루로, 콩으로)\n3. 方向 (앞으로, 서울로)\n4. 身份資格 (반장으로)"
+  },
+  {
+    "id": "beg_u3_05",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Unit 3. Particles - (이)나 ① vs ②",
+    "title": "數量驚嘆 (이)나 vs 選擇 (이)나",
+    "question": "가: 어제 술을 많이 마셨어요?\n나: 네, 맥주를 10병___________ 마셨어요.\n\n위 문장에서 밑줄 친 조사의 의미는?",
+    "options": [
+      "예상보다 수량이 많아 놀라움을 나타냄 (as many as)",
+      "둘 중 하나를 선택함을 나타냄 (or)",
+      "대상을 한정함을 나타냄 (only)",
+      "수량의 대략적인 정도를 나타냄 (about)"
+    ],
+    "answer": 0,
+    "explanation": "名詞數量詞後面接 '(이)나' 表示說話者認為該數量超乎預期之多（竟喝了10瓶之多）。若名詞接 '(이)나' 表示選擇，則是 '빵이나 밥' (麵包或飯)。",
+    "notes": "• 數量詞 + (이)나: 數量驚人、超出預期 (2시간이나 기다렸어요)\n• 名詞 + (이)나 + 名詞: 選擇二者之一 (주말에 영화나 연극을 봐요)"
+  },
+  {
+    "id": "beg_hon_01",
+    "book": "beginner",
+    "level": "初級 (Beginning)",
+    "unit": "Intro & Unit 7 - 敬語與尊稱體系",
+    "title": "主體敬語助詞與尊稱動詞",
+    "question": "다음 중 어법상 가장 자연스럽고 올바른 문장은?",
+    "options": [
+      "할아버지께서 지금 방에서 주무시고 계십니다.",
+      "할아버지가 지금 방에서 자고 있습니다.",
+      "선생님께서 저에게 선물을 주셨습니다.",
+      "어머니가 저에게 돈을 드리셨습니다."
+    ],
+    "answer": 0,
+    "explanation": "對長輩（할아버지）做主語時，主格助詞用 '께서'，動詞 '자다' 的敬語形式是 '주무시다'，因此 '주무시고 계십니다' 完全正確。",
+    "notes": "• 敬語動詞對應：\n  자다 → 주무시다\n  먹다/마시다 → 드시다 / 잡수시다\n  있다 → 계시다\n  말하다 → 말씀하시다\n  죽다 → 돌아가시다\n• 敬語助詞：이/가 → 께서, 은/는 → 께서는, 에게/한테 → 께"
+  },
+  {
+    "id": "adv_ch1_01",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "1장 선택을 나타낼 때 - 01 -느니",
+    "title": "01 -느니 (寧可...也不...)",
+    "question": "가: 그 사람은 돈은 많지만 성격이 너무 괴팍해요.\n나: 저런 사람과 평생 ___________ 차라리 평생 혼자 살겠어요.",
+    "options": [
+      "결혼하느니",
+      "결혼한 바에야",
+      "결혼할망정",
+      "결혼한다고 치면"
+    ],
+    "answer": 0,
+    "explanation": "'-느니' 用於前後兩者都不滿意，但兩害相權取其輕，比起前者的做法，後者相對更好，後句常與 '차라리', '차라리 ~는 게 낫다' 連用。動詞直接接 '-느니'。",
+    "notes": "• -느니: 前後兩項都不理想，但「與其做前面那件事，不如做後面那件」。\n• 句型：A-느니 차라리 B-는 게 낫다 / 하겠다"
+  },
+  {
+    "id": "adv_ch1_02",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "1장 선택을 나타낼 때 - 02 -(으)ㄹ 바에야",
+    "title": "02 -(으)ㄹ 바에야 (既然...倒不如...)",
+    "question": "다음 빈칸에 가장 알맞은 표현을 고르십시오.\n\n적성에 맞지 않는 일을 하면서 스트레스를 ___________ 차라리 몸이 좀 힘든 일을 하는 게 낫겠어요.",
+    "options": [
+      "받을 바에야",
+      "받느니만큼",
+      "받는 통에",
+      "받는 이상"
+    ],
+    "answer": 0,
+    "explanation": "'-(으)ㄹ 바에야' 表示認為前句內容非常不妥或劣於後句，既然無可奈何要做出選擇，倒不如選擇後者。常與 '차라리', '아예' 連用。",
+    "notes": "• -(으)ㄹ 바에야 與 -느니 意義相近，常可互換：\n  '스트레스를 받느니 차라리...' = '스트레스를 받을 바에야 차라리...'\n• 僅能接在動詞之後！"
+  },
+  {
+    "id": "adv_ch1_03",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "1장 선택을 나타낼 때 - 03 -건 -건",
+    "title": "03 -건 -건 (無論...還是...結果都一樣)",
+    "question": "가: 오늘 비가 오거나 눈이 오면 야외 행사는 취소되나요?\n나: 아니요, 비가 ___________ 행사는 예정대로 진행됩니다.",
+    "options": [
+      "오건 안 오건 간에",
+      "오느니 안 오느니",
+      "오다시피 안 오다시피",
+      "오는 통에 안 오는 통에"
+    ],
+    "answer": 0,
+    "explanation": "'-건 -건' 是 '-거나 -거나' 的縮略形，列舉兩個相互對立或平行的情況，表示「無論選擇哪一種情況，後面的結果或行動都不受影響」。常後接 '간에' 或 '상관없이'。",
+    "notes": "• 常見形式：-건 말건, -았건/었건 간에, -이건 아니건\n• 同義替換：-든지 -든지, -거나 -거나"
+  },
+  {
+    "id": "adv_ch1_04",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "1장 선택을 나타낼 때 - 04 -(느)ㄴ다기보다는",
+    "title": "04 -(느)ㄴ다기보다는 (與其說...倒不如說是...)",
+    "question": "가: 두 사람이 드디어 화해했나 봐요?\n나: 화해했다기보다는 서로 피해를 주지 않으려고 조심___________ 표현이 맞을 거예요.",
+    "options": [
+      "한다는",
+      "하느니",
+      "할 바에야",
+      "한다기에"
+    ],
+    "answer": 0,
+    "explanation": "'-(느)ㄴ다기보다는' 用於表示前者的描述不完全精準，用後者的內容來描述才更加恰當。句尾常接 '~는 편이다', '~는 표현이 맞다'。",
+    "notes": "• 動詞：-는다기보다는 / -ㄴ다기보다는\n• 形容詞：-다기보다는\n• 名詞：-(이)라기보다는"
+  },
+  {
+    "id": "adv_ch1_05",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "1장 선택을 나타낼 때 - [확인해 볼까요?]",
+    "title": "1장 종합 연습: 빈칸에 들어갈 수 없는 것 고르기",
+    "question": "다음 빈칸에 들어갈 수 [없는] 것을 고르십시오.\n\n\"컴퓨터가 오래돼서 금방 또 고장 날 텐데 돈 들여서 (          ) 차라리 새로 사는 게 어때?\"",
+    "options": [
+      "수리한다기보다는",
+      "수리하느니",
+      "수리할 바에야",
+      "수리할 바에는"
+    ],
+    "answer": 0,
+    "explanation": "句子中說「既然花錢修理馬上又會壞，倒不如買新的」，這是二者擇一且選後者的讓步選擇句，可以使用 '수리하느니'、'수리할 바에야'（或其變體 '수리할 바에는'）。但 '수리한다기보다는' 是「與其說是修理...」，在此句語意不通。",
+    "notes": "• 此題出自《Korean Grammar in Use Advanced》第1章「확인해 볼까요?」第3題原題考點。"
+  },
+  {
+    "id": "adv_ch2_01",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "2장 인용을 나타낼 때 - 01 보고",
+    "title": "01 보고 (對某人指示/傳達)",
+    "question": "가: 김 대리가 왜 저렇게 화가 났어요?\n나: 팀장님이 김 대리___________ 오늘 야근해서 기획서를 다 끝내라고 했대요.",
+    "options": [
+      "보고",
+      "에 의하면",
+      "다면서",
+      "다니까"
+    ],
+    "answer": 0,
+    "explanation": "'보고' 接在人稱名詞後，表示把說話內容（命令、要求、詢問等）指向該人。在引導間接引語時，相當於 '에게' / '한테' / '더러'。",
+    "notes": "• '보고' / '더러' 常用於口語間接引用句中（팀장님이 나보고 ~하라고 했다）。\n• 注意：非引述句時不能任意取代 '에게'。"
+  },
+  {
+    "id": "adv_ch2_02",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "2장 인용을 나타낼 때 - 02 -(느)ㄴ다니까",
+    "title": "02 -(느)ㄴ다니까 (聽說/既然說了...所以...)",
+    "question": "가: 소피아 씨가 오늘 많이 아프대요.\n나: 몸이 많이 ___________ 우리가 대신 일을 나누어서 처리합시다.",
+    "options": [
+      "아프다니까",
+      "아프다면서",
+      "아프다기에",
+      "아프다시피"
+    ],
+    "answer": 0,
+    "explanation": "'-(느)ㄴ다니까' 是 '-(느)ㄴ다고 하니까' 的縮略形態，表示以聽說的內容或對方的承諾作為依據或理由，後句接建議、要求或動作。",
+    "notes": "• -(느)ㄴ다고 하니까 → -(느)ㄴ다니까\n• 前後子句主語通常不同（別人說了某事，因此我們採取相應行動）。"
+  },
+  {
+    "id": "adv_ch2_03",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "2장 인용을 나타낼 때 - 03 -(느)ㄴ다면서",
+    "title": "03 -(느)ㄴ다면서 (邊說邊做 / 確認聽聞)",
+    "question": "가: 그 사람은 담배를 끊겠다고 ___________ 주머니에서 또 담배를 꺼내 피우더라고요.",
+    "options": [
+      "한다면서",
+      "한답시고",
+      "했기로서니",
+      "한 바에야"
+    ],
+    "answer": 0,
+    "explanation": "'-(느)ㄴ다면서' 是 '-(느)ㄴ다고 하면서' 的縮略形態，表示一邊說著某話，一邊做出某動作（主語必須一致）。若放在句尾 '-(느)ㄴ다면서(요)?' 則用於向對方確認先前聽到的消息。",
+    "notes": "• 句中連接：邊說著前句的話邊做後句動作（前後主語一致）。\n• 句末疑問：向對方再次確認聽聞的事實（'이번에 승진했다면서요?'）。"
+  },
+  {
+    "id": "adv_ch2_04",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "2장 인용을 나타낼 때 - 04 에 의하면",
+    "title": "04 에 의하면 / 에 따르면 (根據消息來源)",
+    "question": "기상청 발표___________, 이번 주말부터 전국에 장마가 시작될 예정이라고 한다.",
+    "options": [
+      "에 의하면",
+      "보고",
+      "다니까",
+      "느니만큼"
+    ],
+    "answer": 0,
+    "explanation": "'에 의하면' 接在新聞報導、調查報告、官方公佈等名詞後，表示該消息的事實依據來源，後面常搭配間接引用結尾 '-ㄴ/는다고 한다'。",
+    "notes": "• 可與 '에 따르면' 互換。\n• 時態必須是現在式，不能寫成 '에 의했으면'。"
+  },
+  {
+    "id": "adv_ch3_01",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "3장 명사화됨을 나타낼 때 - 01 -(으)ㅁ vs -기",
+    "title": "01 -(으)ㅁ vs -기 명사화 차이",
+    "question": "다음 중 공식 문서, 게시문, 안내문에서 주로 사용하는 명사화 종결형(-(으)ㅁ)으로 가장 자연스러운 것은?",
+    "options": [
+      "관계자 외 출입을 금함",
+      "관계자 외 출입을 금하기",
+      "관계자 외 출입을 금하는 데",
+      "관계자 외 출입을 금하는 바"
+    ],
+    "answer": 0,
+    "explanation": "'-(으)ㅁ' 將動詞/形容詞名詞化，常用於客觀事實的確認、書面記錄、通告看板結尾（如：금함, 없음, 마감함）。而 '-기' 偏向個人希望、待辦清單或口語慣用語。",
+    "notes": "• -(으)ㅁ: 確定客觀事實、正式通告、公文檔案結尾（출입을 금함, 합격했음을 알림）\n• -기: 尚未發生之行動、願望、清單備忘（오늘 할 일: 장보기, 청소하기）"
+  },
+  {
+    "id": "adv_ch3_02",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "3장 명사화됨을 나타낼 때 - 02 -는데",
+    "title": "02 -는데 (在...方面 / 做某事的情境)",
+    "question": "가: 이 책이 한국어 능력시험 준비에 도움이 될까요?\n나: 네, 고급 문법을 정리___________ 아주 유용한 책이에요.",
+    "options": [
+      "하는 데",
+      "하는 바",
+      "하느니",
+      "하는 통에"
+    ],
+    "answer": 0,
+    "explanation": "此處的 '-는 데' 是不完全名詞（依存名詞）'데'，表示「在...方面」或「在做...這件事的場合中」，常搭配 '도움이 되다', '효과가 있다', '필요하다', '걸리다' 等詞。",
+    "notes": "• -는 데 (隔開書寫)：表示「在某場合/方面/事情上」\n• -는데 (連寫)：提示背景、轉折連詞"
+  },
+  {
+    "id": "adv_ch3_03",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "3장 명사화됨을 나타낼 때 - 03 -는 바",
+    "title": "03 -는 바 (所...的事實/事物)",
+    "question": "학생들은 역사 박물관을 둘러보고 느낀 ___________ 대해 관람 보고서를 작성하여 제출했다.",
+    "options": [
+      "바에",
+      "통에",
+      "셈에",
+      "이상에"
+    ],
+    "answer": 0,
+    "explanation": "'바' 是依存名詞，與冠形詞尾結合，表示「所...的事情、內容或結果」（느낀 바에 대해 = 對於所感受到的事情）。常用於正式演講或書面語中（예: 조사한 바에 의하면, 생각하는 바가 크다）。",
+    "notes": "• -는 바: 所...的事物/內容（正式書面語）\n• 관용 표현: 앞서 언급한 바와 같이, 내가 알기로는 그런 바가 없다"
+  },
+  {
+    "id": "adv_ch4_01",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "4장 원인과 이유를 나타낼 때 - 02 -는 통에",
+    "title": "02 -는 통에 (在一片喧鬧/混亂中導致不良結果)",
+    "question": "가: 어젯밤에 잠을 잘 못 잤어요?\n나: 네, 옆방 아이들이 밤새 소리 지르고 떠드___________ 한숨도 못 잤어요.",
+    "options": [
+      "는 통에",
+      "느니만큼",
+      "는 이상",
+      "는 셈치고"
+    ],
+    "answer": 0,
+    "explanation": "'-는 통에' 表示在吵鬧、混亂或複雜的情境下引發了不好的消極後果。後句常為負面結果（한숨도 못 잤다）。",
+    "notes": "• 限制1：後句只能是「負面/不良結果」，不可用於正面結果。\n• 限制2：後句絕對不可接命令型(-으십시오)或共動型(-자)。\n• 限制3：僅能接動詞！"
+  },
+  {
+    "id": "adv_ch4_02",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "4장 원인과 이유를 나타낼 때 - 辨析: -는 통에 vs -는 바람에 vs -는 탓에",
+    "title": "三大負面原因文法深度辨析",
+    "question": "다음 중 문맥상 어색한 문장은?",
+    "options": [
+      "친구들이 서두르는 바람에 지갑을 두고 나왔어요.",
+      "아이가 밤새 우는 통에 잠을 설쳤어요.",
+      "내가 열심히 노력한 통에 시험에 합격했어요.",
+      "어제 비를 맞은 탓에 감기에 심하게 걸렸어요."
+    ],
+    "answer": 2,
+    "explanation": "'-는 통에' 只能引發「消極、混亂導致的負面結果」，絕對不能用於 '시험에 합격했어요'(考試合格) 這種積極正面成果！",
+    "notes": "• -는 통에: 喧鬧/混亂局面導致的負面結果\n• -는 바람에: 突發/意料之外的情況影響後續結果\n• -는 탓에: 將壞結果歸咎於某個缺點或過失"
+  },
+  {
+    "id": "adv_ch4_03",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "4장 원인과 이유를 나타낼 때 - 05 -는 이상",
+    "title": "05 -는 이상 (既然已經...就必須...)",
+    "question": "가: 회사 규정이 좀 엄격해서 적응하기 힘들어요.\n나: 아무리 규정이 까다로워도 이 회사의 직원으로 일하___________ 성실히 따라야죠.",
+    "options": [
+      "는 이상",
+      "는 통에",
+      "느니",
+      "는 바에야"
+    ],
+    "answer": 0,
+    "explanation": "'-는 이상' 表示「既然事實已定/既然處於某狀態，理所當然必須做出後續相應行動」。常與 '-(으)ㄹ 수밖에 없다', '-아/어야 한다' 連用。",
+    "notes": "• 意思相當於「既然已經...就應當/只能...」\n• 動詞現在式: -는 이상\n• 動詞過去式: -(으)ㄴ 이상\n• 形容詞: -(으)ㄴ 이상\n• 名詞: -인 이상"
+  },
+  {
+    "id": "adv_ch4_04",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "4장 원인과 이유를 나타낼 때 - 07 -기에 망정이지",
+    "title": "07 -기에 망정이지 (幸好...要不然就糟了)",
+    "question": "가: 오늘 폭설로 차가 많이 미끄러졌다면서요?\n나: 네, 서행 운전을 ___________ 정말 큰 사고가 날 뻔했어요.",
+    "options": [
+      "했기에 망정이지",
+      "했는 통에",
+      "하느니만큼",
+      "했기로서니"
+    ],
+    "answer": 0,
+    "explanation": "'-기에 망정이지' 表示「幸好前句做了某事/存在某慶幸情況，才避免了後句可怕或嚴重的後果」。後句幾乎必定搭配 '-았/었을 것이다' 或 '-(으)ㄹ 뻔했다'。",
+    "notes": "• 句型：선행절-기에 망정이지 + 하마터면/정말 ~ -(으)ㄹ 뻔했다\n• 過去式：-았/었기에 망정이지"
+  },
+  {
+    "id": "adv_ch4_05",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "4장 원인과 이유를 나타낼 때 - 08 -(느)ㄴ답시고",
+    "title": "08 -(느)ㄴ답시고 (自以為是地/說是為了...結果卻搞砸)",
+    "question": "가: 요리가 잘 완성되었나요?\n나: 남편이 요리를 도와___________ 주방을 온통 난장판으로 만들어 놓았어요.",
+    "options": [
+      "준답시고",
+      "주기에 망정이지",
+      "준들",
+      "주기로서니"
+    ],
+    "answer": 0,
+    "explanation": "'-(느)ㄴ답시고' 表示原本聲稱或打算好好做某事，但結果卻往往不盡人意、令人感到不滿或可笑，帶有譏諷或自嘲意味。",
+    "notes": "• 用於批評他人行動或自己謙遜自嘲（내가 도와준답시고 오히려 방해만 됐다）。\n• 僅能接動詞！後句接不滿意或搞砸的結果。"
+  },
+  {
+    "id": "adv_ch4_06",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "4장 원인과 이유를 나타낼 때 - 06 -기로서니",
+    "title": "06 -기로서니 (就算再怎麼...也不能...)",
+    "question": "가: 소피아 씨가 지난 모임에 연락도 없이 안 나왔대요.\n나: 아무리 바쁘___________ 전화 한 통 못 해 준 건 너무했어요.",
+    "options": [
+      "기로서니",
+      "느니만큼",
+      "기에 망정이지",
+      "는 통에"
+    ],
+    "answer": 0,
+    "explanation": "'-기로서니' 承認前句的事實，但強調這絕不能成為後句過分行為的藉口或理由。常與 '아무리' 呼應，後句常帶有反問、責怪語氣。",
+    "notes": "• 搭配：아무리 + A/V-기로서니 + 어떻게 그럴 수 있는가?\n• 強調即便前述情有可原，後面的行為也太過分或不可接受。"
+  },
+  {
+    "id": "adv_ch4_07",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "4장 원인과 이유를 나타낼 때 - 11 -길래",
+    "title": "01/11 -길래 vs -기에 語體與主語限制",
+    "question": "다음 중 '-길래'의 어법상 올바르지 [않은] 사용은?",
+    "options": [
+      "날씨가 너무 춥길래 집에 들어가세요. (명령문)",
+      "백화점에서 세일을 하길래 옷을 두 벌 샀어요.",
+      "친구가 맛있다고 추천하길래 그 식당에 가 봤어요.",
+      "밖에서 무슨 소리가 나길래 창밖을 내다보았어요."
+    ],
+    "answer": 0,
+    "explanation": "'-길래' 的後句絕不能接「命令型(-으세요 / -십시오)」或「共動型(-자)」，只能陳述自己的客觀行為。此外，'-길래' 是口語體，書面語應換成 '-기에'。",
+    "notes": "• -길래 限制：\n1. 口語表現（書面語改用 -기에）\n2. 後句不能接命令句或共動句！\n3. 平敘文中，前句主語多為第2/3人稱或客觀自然現象，後句主語為第1人稱（我採取某行動）。"
+  },
+  {
+    "id": "adv_ch5_01",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "5장 가정 상황을 나타낼 때 - 01 -더라도 vs 02 -(으)ㄹ지라도",
+    "title": "01 -더라도 vs 02 -(으)ㄹ지라도 (讓步假設)",
+    "question": "다음 중 '-더라도'와 비교했을 때 '-(으)ㄹ지라도'의 특징으로 가장 알맞은 것은?",
+    "options": [
+      "격식적이고 문어체적인 느낌이 훨씬 강하며 비록/설령과 잘 어울린다.",
+      "명령문이나 청유문에만 쓸 수 있다.",
+      "후행절에 반드시 긍정적인 결과만 와야 한다.",
+      "오직 과거 시제에만 결합할 수 있다."
+    ],
+    "answer": 0,
+    "explanation": "'-(으)ㄹ지라도' 比起 '-더라도' 具有更強的書面語色彩和莊重嚴肅感，常與副詞 '비록'(縱使), '설령'(即便) 搭配使用，承認前述假設或事實，但後句行動仍堅定不受動搖。",
+    "notes": "• -더라도: 口語與書面皆可用，表示「即使...也」\n• -(으)ㄹ지라도: 正式書面語、文學作品、演講等，莊重感最高\n• 兩者皆可接於動詞、形容詞及名詞後"
+  },
+  {
+    "id": "adv_ch5_02",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "5장 가정 상황을 나타낼 때 - 03 -(으)ㄴ들",
+    "title": "03 -(으)ㄴ들 (就算...又能如何呢？)",
+    "question": "가: 그 사람은 재산도 많고 명예도 높아서 정말 부러워요.\n나: 아무리 돈이 많___________ 건강을 잃으면 무슨 소용이 있겠어요?",
+    "options": [
+      "은들",
+      "을지라도",
+      "는 통에",
+      "는 셈치고"
+    ],
+    "answer": 0,
+    "explanation": "'-(으)ㄴ들' 是帶有反問語氣的讓步假定詞尾，表示「就算假設前句條件成立，後句的結果也毫無意義或不會改變」。後句近乎固定採用反問句型（무슨 소용이 있겠는가? / 누가 알아주겠는가?）。",
+    "notes": "• 句型：아무리 A/V-(으)ㄴ들 + 무슨 소용이 있겠는가? / 어찌 하겠는가?\n• 強烈反詰否定：縱使有再多錢，又能如何？"
+  },
+  {
+    "id": "adv_ch5_03",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "5장 가정 상황을 나타낼 때 - 04 -(으)ㄹ망정",
+    "title": "04 -(으)ㄹ망정 (寧可...也絕不 / 雖然...但至少...)",
+    "question": "가: 사업이 망해서 형편이 매우 어렵다고 들었습니다.\n나: 네, 길거리에서 굶어 ___________ 남의 돈을 훔치는 비겁한 짓은 절대 하지 않겠습니다.",
+    "options": [
+      "죽을망정",
+      "죽는 셈치고",
+      "죽은들",
+      "죽는 통에"
+    ],
+    "answer": 0,
+    "explanation": "'-(으)ㄹ망정' 在此表示寧願承受前句極端負面的處境（就算餓死街頭），也絕不妥協做出後句違背底線之事。展現說話者極其堅決的意志。",
+    "notes": "• 用法1 (極端意志選擇)：A-(으)ㄹ망정 B는 절대 안 한다（寧死不屈）\n• 用法2 (轉折對比)：雖然前面有缺點，但至少後面有優點（집은 좁을망정 아늑하다）"
+  },
+  {
+    "id": "adv_ch5_04",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "5장 가정 상황을 나타낼 때 - 05 -(느)ㄴ다고 치다",
+    "title": "05 -(느)ㄴ다고 치다 (就算姑且承認...但...)",
+    "question": "가: 차가 막혀서 늦을 수도 있잖아요.\n나: 차가 막혔___________ 2시간이나 지각하는 게 말이 돼요?",
+    "options": [
+      "다고 치더라도",
+      "는 셈치고",
+      "는 통에",
+      "느니만큼"
+    ],
+    "answer": 0,
+    "explanation": "'-(느)ㄴ다고 치다'（常與 '-더라도' 結合為 '-다고 치더라도' / '-다고 치고'）表示退一步姑且承認或假定對方的理由存在，但接著反駁後續依然不合理或有問題。",
+    "notes": "• 搭配：A-다고 치더라도 / A-다고 치자\n• 語意：就算退一萬步算你說得對，那後面這個問題又怎麼解釋？"
+  },
+  {
+    "id": "adv_ch5_05",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "5장 가정 상황을 나타낼 때 - 06 -는 셈치다",
+    "title": "06 -는 셈치다 (就當作是...吧 / 自我開解)",
+    "question": "가: 힘들게 준비했던 공모전에서 떨어져서 너무 속상해요.\n나: 너무 낙담하지 마세요. 이번에는 좋은 경험을 ___________ 다음 기회를 준비해 봐요.",
+    "options": [
+      "한 셈치고",
+      "하느니만큼",
+      "했기로서니",
+      "하는 통에"
+    ],
+    "answer": 0,
+    "explanation": "'-는 셈치다'（常以 '-는 셈치고' 連接）表示明知事實並非如此，但在心理上當作是那樣，用以自我寬慰、吃虧認栽或下定決心（如：속는 셈치고 한번 믿어보다, 기부하는 셈치다, 좋은 경험을 한 셈치다）。",
+    "notes": "• 慣用表現：\n  속는 셈치고 사 보세요 (就當被騙一次買看看吧)\n  도둑맞은 셈치다 (就當作被小偷光顧丟了錢，看開點)\n  좋은 경험을 한 셈치다 (就當買個教訓與寶貴經驗)"
+  },
+  {
+    "id": "adv_ch5_06",
+    "book": "advanced",
+    "level": "高級 (Advanced)",
+    "unit": "5장 가정 상황을 나타낼 때 - [확인해 볼까요?]",
+    "title": "5장 종합 연습: 빈칸에 들어갈 수 없는 표현 고르기",
+    "question": "다음 빈칸에 들어갈 수 [없는] 것을 고르십시오.\n\n\"비록 당장은 아무것도 눈에 보이지 않고 아무것도 이루어 놓은 게 (          ) 무엇이든 꿈꿀 수 있고 무엇이든 도전할 수 있는 것이 젊음의 특권 아니겠는가?\"",
+    "options": [
+      "없을망정",
+      "없을지라도",
+      "없을뿐더러",
+      "없을진대"
+    ],
+    "answer": 2,
+    "explanation": "本句句意為「縱使眼前一無所有，但能夢想與挑戰正是年輕的特權」，需要讓步假設連詞（'없을망정', '없을지라도', '없을진대'）。而 '-(으)ㄹ뿐더러' 是「不僅...而且...」(遞進)，與上下文讓步轉折邏輯矛盾。",
+    "notes": "• 此題出自《Korean Grammar in Use Advanced》第5章「확인해 볼까요?」第4題原題考點。"
+  }
+];
+    const GRAMMAR_REFERENCES = [
+  {
+    "title": "初級焦點：N이/가 vs N은/는 主格與主題辨析",
+    "level": "初級 (Beginning)",
+    "summary": "韓語最基礎也最容易混淆的兩大助詞。核心區別在於句子的『資訊焦點』與『語用功能』。",
+    "table": {
+      "headers": [
+        "區分",
+        "N 이/가 (主格助詞)",
+        "N 은/는 (主題/對比助詞)"
+      ],
+      "rows": [
+        [
+          "焦點位置",
+          "焦點在『主語本身』（誰做的？）",
+          "焦點在『後面的述語』（關於這個主題，情況如何？）"
+        ],
+        [
+          "新舊資訊",
+          "引出『新資訊』或自然描寫",
+          "承接『已知/舊資訊』，作為話題開端"
+        ],
+        [
+          "對比功能",
+          "無特別對比含義",
+          "帶有強烈『對比、強調差異』之意"
+        ],
+        [
+          "疑問詞連用",
+          "疑問詞必須接이/가 (누가, 무엇이)",
+          "疑問詞後不可接은/는"
+        ]
+      ]
+    },
+    "examples": [
+      "옛날에 한 왕이 살았어요 (初次登場新資訊: 이). 그 왕은 매우 지혜로웠어요 (接續已知話題: 은).",
+      "누가 빵을 먹었어요? (誰吃了？) - 제가 먹었어요 (是我吃了！)",
+      "형은 키가 커요. 동생은 키가 작아요. (兩者鮮明對比)"
+    ],
+    "nuance": "當你想強調『到底是誰/是什麼』時用 이/가；當你想說『至於某人/某事嘛...』並說明其特點或對比時用 은/는。"
+  },
+  {
+    "title": "初級焦點：N에 vs N에서 處所助詞完整對比",
+    "level": "初級 (Beginning)",
+    "summary": "兩者均可翻譯為中文的『在...』，但結合的動詞性質與情境截然不同。",
+    "table": {
+      "headers": [
+        "助詞",
+        "搭配動詞特性",
+        "核心意義與例句"
+      ],
+      "rows": [
+        [
+          "N에",
+          "靜態存在動詞、方向到達動詞",
+          "存在位置 (있다/없다), 到達目標 (가다/오다/도착하다)"
+        ],
+        [
+          "N에서",
+          "動態行為動詞、出發起點動詞",
+          "動作進行處 (공부하다/일하다), 起點 (출발하다/오다)"
+        ]
+      ]
+    },
+    "examples": [
+      "도서관에 책이 있어요. (圖書館有書 - 靜態存在)",
+      "도서관에서 책을 읽어요. (在圖書館讀書 - 動態行為)",
+      "서울에서 부산까지 가요. (從首爾到釜山 - 出發起點)"
+    ],
+    "nuance": "『살다』(居住) 較為特殊，既可用 '서울에 살아요'（側重落腳居住處），亦可用 '서울에서 살아요'（側重在首爾生活度日）。"
+  },
+  {
+    "title": "高級焦點：負面原因三兄弟 (-는 통에 vs -는 바람에 vs -는 탓에)",
+    "level": "高級 (Advanced)",
+    "summary": "這三個文法都表示『原因導致不良後果』，但其導致問題的內在原因與語境細膩度不同。",
+    "table": {
+      "headers": [
+        "文法",
+        "核心情境與成因",
+        "語法限制與典型範例"
+      ],
+      "rows": [
+        [
+          "-는 통에",
+          "喧鬧、混亂、吵雜的混亂場面",
+          "僅接動詞；絕不可接命令/共動句 (우는 통에 못 잤다)"
+        ],
+        [
+          "-는 바람에",
+          "始料未及的突發意外狀況",
+          "僅接動詞；後句不可接意志命令句 (비가 오는 바람에 늦었다)"
+        ],
+        [
+          "-는 탓에",
+          "歸咎於某個缺點、過失或過錯",
+          "動詞/形容詞皆可；抱怨歸咎語氣 (게으른 탓에 실패했다)"
+        ]
+      ]
+    },
+    "examples": [
+      "아이들이 시끄럽게 떠드는 통에 정신을 차릴 수가 없었다. (混亂喧鬧引起)",
+      "갑자기 타이어가 펑크 나는 바람에 약속 시간에 늦었다. (突發意外引起)",
+      "어젯밤 늦게까지 게임을 한 탓에 오늘 시험을 망쳤다. (自身過失歸咎)"
+    ],
+    "nuance": "若結果是好的，這三者通通不能用！正面結果應使用 '-덕분에' 或 '-(으)ㄴ 결과'。"
+  },
+  {
+    "title": "高級焦點：無奈選擇與讓步 (-느니 vs -(으)ㄹ 바에야 vs -(으)ㄹ망정)",
+    "level": "高級 (Advanced)",
+    "summary": "表達在多個不盡如人意的選項中進行取捨與抉擇的高級句型對比。",
+    "table": {
+      "headers": [
+        "文法",
+        "說話者心理狀態",
+        "常見搭配與句尾形式"
+      ],
+      "rows": [
+        [
+          "-느니",
+          "兩者都很討厭，但前者比後者更糟，兩害相權取其輕",
+          "常搭 '차라리', '차라리 ~는 게 낫다'"
+        ],
+        [
+          "-(으)ㄹ 바에야",
+          "既然前者的情況如此糟糕/無意義，倒不如索性選擇後者",
+          "常搭 '차라리', '아예' (意境與 -느니 非常相近)"
+        ],
+        [
+          "-(으)ㄹ망정",
+          "具有寧死不屈的極端意志，或雖然有前者的缺點但至少守住底線",
+          "常搭 '절대 ~지 않겠다', 帶有強烈尊嚴與原則感"
+        ]
+      ]
+    },
+    "examples": [
+      "비굴하게 사정하느니 차라리 굶어 죽겠다. (與其卑躬屈膝求饒，寧可餓死)",
+      "매일 야근하면서 스트레스 받을 바에야 월급이 적어도 편한 일을 하겠어.",
+      "길거리에서 얼어 죽을망정 부정한 돈은 단 한 푼도 받지 않겠다. (寧死不收不義之財)"
+    ],
+    "nuance": "-(으)ㄹ망정 還有一種轉折用法：'몸은 피곤할망정 마음만은 뿌듯하다' (雖然身體疲憊，但心裡很充實)。"
+  },
+  {
+    "title": "高級焦點：假設退步 (-더라도 vs -(으)ㄹ지라도 vs -(으)ㄴ들)",
+    "level": "高級 (Advanced)",
+    "summary": "探討在退讓一步的假定條件下，後續情境與結果的語氣強度對比。",
+    "table": {
+      "headers": [
+        "文法",
+        "語體風格與色彩",
+        "修辭特點與邏輯關係"
+      ],
+      "rows": [
+        [
+          "-더라도",
+          "口語與書面均廣泛使用",
+          "普遍的讓步假設：即使...也依舊..."
+        ],
+        [
+          "-(으)ㄹ지라도",
+          "書面語色彩極濃，莊重嚴肅",
+          "縱使...也絕不改變；常搭 '비록', '설령'"
+        ],
+        [
+          "-(으)ㄴ들",
+          "文學、格言、反問修辭",
+          "反問語氣極強：就算...又有何用呢？後句幾乎必為反問句"
+        ]
+      ]
+    },
+    "examples": [
+      "비가 오더라도 경기는 계속됩니다. (日常生活常見)",
+      "비록 온갖 역경이 닥칠지라도 꿈을 포기하지 않을 것이다. (正式書面演講)",
+      "이미 버스는 떠났는데 후회한들 무슨 소용이 있겠는가? (反詰修辭，等於毫無用處)"
+    ],
+    "nuance": "看見 '무슨 소용이 있는가?' 或 '어찌 알겠는가?' 等反詰反問句時，首選 '-(으)ㄴ들'！"
+  }
+];
+
+
+    // --- State Management ---
+    let currentQuestions = [...RAW_QUESTIONS];
+    let currentIndex = 0;
+    let answered = false;
+    let stats = {
+      score: 0,
+      streak: 0,
+      totalAnswered: 0,
+      totalCorrect: 0,
+      mistakeIds: []
+    };
+
+
+    // Load stats from LocalStorage
+    function loadStorage() {
+      try {
+        const saved = localStorage.getItem('kg_stats');
+        if (saved) {
+          stats = Object.assign(stats, JSON.parse(saved));
+          updateStatsDisplay();
+        }
+      } catch (e) {
+        console.warn('Storage load failed', e);
+      }
+    }
+
+
+    function saveStorage() {
+      try {
+        localStorage.setItem('kg_stats', JSON.stringify(stats));
+      } catch (e) {
+        console.warn('Storage save failed', e);
+      }
+    }
+
+
+    function updateStatsDisplay() {
+      document.getElementById('score-count').textContent = stats.score;
+      document.getElementById('streak-count').textContent = stats.streak;
+      const acc = stats.totalAnswered > 0 ? Math.round((stats.totalCorrect / stats.totalAnswered) * 100) : 0;
+      document.getElementById('accuracy-rate').textContent = acc + '%';
+    }
+
+
+    function populateUnitSelect() {
+      const bookFilter = document.getElementById('book-select').value;
+      const unitSelect = document.getElementById('unit-select');
+      const units = new Set();
+      RAW_QUESTIONS.forEach(q => {
+        if (bookFilter === 'all' || q.book === bookFilter) {
+          units.add(q.unit);
+        }
+      });
+      unitSelect.innerHTML = '<option value="all">所有章節類別 (' + units.size + ' 個)</option>';
+      units.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u;
+        opt.textContent = u;
+        unitSelect.appendChild(opt);
+      });
+    }
+
+
+    function onFilterChange() {
+      const bookFilter = document.getElementById('book-select').value;
+      const unitFilter = document.getElementById('unit-select').value;
+
+
+      currentQuestions = RAW_QUESTIONS.filter(q => {
+        const matchBook = (bookFilter === 'all' || q.book === bookFilter);
+        const matchUnit = (unitFilter === 'all' || q.unit === unitFilter);
+        return matchBook && matchUnit;
+      });
+
+
+      if (currentQuestions.length === 0) {
+        currentQuestions = [...RAW_QUESTIONS];
+      }
+
+
+      currentIndex = 0;
+      renderCurrentQuestion();
+    }
+
+
+    function shuffleCurrentQuestions() {
+      for (let i = currentQuestions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [currentQuestions[i], currentQuestions[j]] = [currentQuestions[j], currentQuestions[i]];
+      }
+      currentIndex = 0;
+      renderCurrentQuestion();
+    }
+
+
+    function resetProgress() {
+      if (confirm('確定重置所有練習進度與錯題記錄嗎？')) {
+        stats = { score: 0, streak: 0, totalAnswered: 0, totalCorrect: 0, mistakeIds: [] };
+        saveStorage();
+        updateStatsDisplay();
+        currentIndex = 0;
+        renderCurrentQuestion();
+        renderMistakes();
+      }
+    }
+
+
+    // TTS pronunciation using SpeechSynthesis
+    function speakKorean(text) {
+      if ('speechSynthesis' in window) {
+        // Extract Korean text only for cleaner pronunciation
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ko-KR';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert('您的瀏覽器不支援語音合成功能。');
+      }
+    }
+
+
+    // Render Question
+    function renderCurrentQuestion() {
+      const container = document.getElementById('quiz-container');
+      const progressBar = document.getElementById('progress-bar');
+      
+      if (currentQuestions.length === 0) {
+        container.innerHTML = '<div class="empty-state"><h3>目前篩選條件下沒有題目</h3></div>';
+        return;
+      }
+
+
+      const q = currentQuestions[currentIndex];
+      const progressPercent = ((currentIndex + 1) / currentQuestions.length) * 100;
+      progressBar.style.width = progressPercent + '%';
+      answered = false;
+
+
+      const isBookBeg = q.book === 'beginner';
+      const levelBadgeClass = isBookBeg ? 'badge-beginner' : 'badge-advanced';
+
+
+      let optionsHtml = '';
+      q.options.forEach((opt, idx) => {
+        optionsHtml += `
+          <button class="option-btn" id="opt-btn-${idx}" onclick="handleSelectOption(${idx})">
+            <span><strong>${idx + 1}.</strong> ${escapeHtml(opt)}</span>
+          </button>
+        `;
+      });
+
+
+      container.innerHTML = `
+        <div class="card-meta">
+          <div>
+            <span class="badge-pill ${levelBadgeClass}">${escapeHtml(q.level)}</span>
+            <span class="badge-pill badge-unit">${escapeHtml(q.unit)}</span>
+          </div>
+          <div class="q-progress">題目 ${currentIndex + 1} / ${currentQuestions.length}</div>
+        </div>
+
+
+        <h3 class="question-title">
+          ${escapeHtml(q.title)}
+          <button class="tts-btn" onclick="speakKorean('${escapeForJs(q.question)}')">🔊 發音</button>
+        </h3>
+
+
+        <div class="question-body">${formatQuestionText(q.question)}</div>
+
+
+        <div class="options-grid">
+          ${optionsHtml}
+        </div>
+
+
+        <div class="explanation-panel" id="exp-panel">
+          <div class="explanation-header" id="exp-header"></div>
+          <div class="explanation-text" id="exp-text"></div>
+          ${q.notes ? `<div class="grammar-note-box"><strong>💡 文法規則 & 易混淆點：</strong>\n${escapeHtml(q.notes)}</div>` : ''}
+        </div>
+
+
+        <div class="quiz-footer">
+          <button class="action-btn" onclick="bookmarkMistake('${q.id}')">🔖 收藏/加入錯題本</button>
+          <button class="action-btn primary" id="next-q-btn" onclick="nextQuestion()" style="display:none;">下一題 ➔</button>
+        </div>
+      `;
+    }
+
+
+    function handleSelectOption(selectedIdx) {
+      if (answered) return;
+      answered = true;
+
+
+      const q = currentQuestions[currentIndex];
+      const isCorrect = (selectedIdx === q.answer);
+      const expPanel = document.getElementById('exp-panel');
+      const expHeader = document.getElementById('exp-header');
+      const expText = document.getElementById('exp-text');
+      const nextBtn = document.getElementById('next-q-btn');
+
+
+      // Update button styles
+      q.options.forEach((opt, idx) => {
+        const btn = document.getElementById('opt-btn-' + idx);
+        btn.disabled = true;
+        if (idx === q.answer) {
+          btn.classList.add(isCorrect ? 'selected-correct' : 'reveal-correct');
+        } else if (idx === selectedIdx && !isCorrect) {
+          btn.classList.add('selected-wrong');
+        }
+      });
+
+
+      // Update Stats
+      stats.totalAnswered++;
+      if (isCorrect) {
+        stats.score += 10;
+        stats.streak++;
+        stats.totalCorrect++;
+        expHeader.className = 'explanation-header correct';
+        expHeader.innerHTML = '✅ 回答正確！ (+10 分)';
+      } else {
+        stats.streak = 0;
+        expHeader.className = 'explanation-header wrong';
+        expHeader.innerHTML = '❌ 回答錯誤！ 正確答案是：<strong>' + (q.answer + 1) + '. ' + escapeHtml(q.options[q.answer]) + '</strong>';
+        if (!stats.mistakeIds.includes(q.id)) {
+          stats.mistakeIds.push(q.id);
+        }
+      }
+
+
+      expText.textContent = q.explanation;
+      expPanel.style.display = 'block';
+      nextBtn.style.display = 'inline-block';
+
+
+      saveStorage();
+      updateStatsDisplay();
+    }
+
+
+    function nextQuestion() {
+      if (currentIndex < currentQuestions.length - 1) {
+        currentIndex++;
+      } else {
+        alert('恭喜你完成了本組別的所有題目！點擊「確定」重新洗牌練習。');
+        shuffleCurrentQuestions();
+      }
+      renderCurrentQuestion();
+    }
+
+
+    function bookmarkMistake(id) {
+      if (!stats.mistakeIds.includes(id)) {
+        stats.mistakeIds.push(id);
+        alert('已將此題加入錯題重點庫！');
+      } else {
+        alert('此題已經在錯題庫中。');
+      }
+      saveStorage();
+    }
+
+
+    // Tab Switching
+    function switchView(view) {
+      document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+      const buttons = document.querySelectorAll('.nav-tab-btn');
+      if (view === 'practice') buttons[0].classList.add('active');
+      if (view === 'reference') buttons[1].classList.add('active');
+      if (view === 'mistakes') buttons[2].classList.add('active');
+
+
+      document.getElementById('view-practice').style.display = (view === 'practice') ? 'block' : 'none';
+      document.getElementById('practice-filters').style.display = (view === 'practice') ? 'flex' : 'none';
+      document.getElementById('view-reference').style.display = (view === 'reference') ? 'block' : 'none';
+      document.getElementById('view-mistakes').style.display = (view === 'mistakes') ? 'block' : 'none';
+
+
+      if (view === 'reference') renderReferences();
+      if (view === 'mistakes') renderMistakes();
+    }
+
+
+    // Render References
+    function renderReferences() {
+      const container = document.getElementById('ref-container');
+      let html = '';
+      GRAMMAR_REFERENCES.forEach(ref => {
+        html += `
+          <div class="ref-card">
+            <div class="ref-title">
+              ${escapeHtml(ref.title)}
+              <span class="ref-badge">${escapeHtml(ref.level)}</span>
+            </div>
+            <div class="ref-content">
+              <p><strong>說明：</strong>${escapeHtml(ref.summary)}</p>
+              ${ref.table ? renderRefTable(ref.table) : ''}
+              ${ref.examples ? ref.examples.map(ex => `<div class="example-tag">${escapeHtml(ex)}</div>`).join('') : ''}
+              ${ref.nuance ? `<div class="grammar-note-box" style="margin-top:8px;"><strong>⚡ 辨析與考點：</strong>\n${escapeHtml(ref.nuance)}</div>` : ''}
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+
+    function renderRefTable(table) {
+      let ths = table.headers.map(h => `<th>${escapeHtml(h)}</th>`).join('');
+      let trs = table.rows.map(row => `<tr>${row.map(cell => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('');
+      return `<table class="ref-table"><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+    }
+
+
+    // Render Mistakes
+    function renderMistakes() {
+      const container = document.getElementById('mistakes-container');
+      const mistakeList = RAW_QUESTIONS.filter(q => stats.mistakeIds.includes(q.id));
+
+
+      if (mistakeList.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🎉</div>
+            <h3>目前沒有錯題記錄！</h3>
+            <p>做錯的題目會自動匯總於此處，方便隨時複習強化記憶。</p>
+          </div>
+        `;
+        return;
+      }
+
+
+      let html = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h3>錯題清單 (${mistakeList.length} 題)</h3>
+          <div>
+            <button class="action-btn primary" onclick="practiceMistakes()">🎯 針對錯題專題特訓</button>
+            <button class="action-btn" onclick="clearMistakes()">🗑️ 清空錯題</button>
+          </div>
+        </div>
+      `;
+
+
+      mistakeList.forEach((q, idx) => {
+        html += `
+          <div class="quiz-card" style="margin-bottom:16px; padding:20px;">
+            <div class="card-meta">
+              <span class="badge-pill ${q.book === 'beginner' ? 'badge-beginner' : 'badge-advanced'}">${escapeHtml(q.level)}</span>
+              <span class="badge-pill badge-unit">${escapeHtml(q.unit)}</span>
+            </div>
+            <h4 style="margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.title)}</h4>
+            <div class="question-body" style="font-size:0.95rem; padding:12px 16px;">${formatQuestionText(q.question)}</div>
+            <div style="font-size:0.92rem; color:#059669; font-weight:700; margin-bottom:6px;">
+              正確答案：${q.answer + 1}. ${escapeHtml(q.options[q.answer])}
+            </div>
+            <div style="font-size:0.9rem; color:#475569; margin-bottom:8px;">${escapeHtml(q.explanation)}</div>
+            <button class="action-btn" style="padding:4px 10px; font-size:0.8rem;" onclick="removeSingleMistake('${q.id}')">已掌握（移除）</button>
+          </div>
+        `;
+      });
+
+
+      container.innerHTML = html;
+    }
+
+
+    function practiceMistakes() {
+      const mistakeList = RAW_QUESTIONS.filter(q => stats.mistakeIds.includes(q.id));
+      if (mistakeList.length === 0) return;
+      currentQuestions = [...mistakeList];
+      currentIndex = 0;
+      switchView('practice');
+    }
+
+
+    function clearMistakes() {
+      if (confirm('確定清空所有錯題記錄嗎？')) {
+        stats.mistakeIds = [];
+        saveStorage();
+        renderMistakes();
+      }
+    }
+
+
+    function removeSingleMistake(id) {
+      stats.mistakeIds = stats.mistakeIds.filter(mid => mid !== id);
+      saveStorage();
+      renderMistakes();
+    }
+
+
+    // Helper utilities
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+
+    function escapeForJs(str) {
+      if (!str) return '';
+      return String(str).replace(/'/g, "\\'").replace(/\\n/g, ' ');
+    }
+
+
+    function formatQuestionText(text) {
+      return escapeHtml(text).replace(/\\n/g, '<br>');
+    }
+
+
+    // Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStorage();
+      populateUnitSelect();
+      renderCurrentQuestion();
+    });
+  </script>
+</body>
+</html>
