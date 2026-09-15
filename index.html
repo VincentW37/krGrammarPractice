@@ -653,6 +653,7 @@
       <div class="stat-pill hearts">❤️ <span id="hearts-count">5</span></div>
     </div>
     <div class="header-controls">
+      <button class="icon-btn" onclick="shuffleCurrentQuestions(true)" title="隨機換題/洗牌">🔀</button>
       <button class="icon-btn" id="sound-toggle-btn" onclick="toggleSound()" title="音效切換">🔊</button>
       <button class="icon-btn" onclick="openChapterModal()" title="章節篩選">☰</button>
     </div>
@@ -890,7 +891,7 @@
       applyCombinedFilters();
     }
 
-    function applyCombinedFilters() {
+    function applyCombinedFilters(shouldShuffle = true) {
       currentQuestions = RAW_QUESTIONS.filter(q => {
         const matchBook = (currentBookFilter === 'all' || q.book === currentBookFilter);
         const matchType = (currentTypeFilter === 'all' || q.type === currentTypeFilter);
@@ -899,6 +900,10 @@
 
       if (currentQuestions.length === 0) {
         currentQuestions = RAW_QUESTIONS.filter(q => currentBookFilter === 'all' || q.book === currentBookFilter);
+      }
+
+      if (shouldShuffle) {
+        shuffleArray(currentQuestions);
       }
 
       currentIndex = 0;
@@ -924,8 +929,28 @@
       hearts: 5,
       totalAnswered: 0,
       totalCorrect: 0,
-      mistakeIds: []
+      mistakeIds: [],
+      autoShuffleOnLaunch: true,
+      lastActiveIndex: 0
     };
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function skipQuestion() {
+      playPopSound();
+      if (currentIndex < currentQuestions.length - 1) {
+        currentIndex++;
+      } else {
+        shuffleCurrentQuestions(false);
+      }
+      renderCurrentQuestion();
+    }
 
     function loadState() {
       try {
@@ -992,7 +1017,10 @@
         <div class="unit-tag-row">
           <span class="level-badge ${badgeClass}">${escapeHtml(q.level)}</span>
           <span class="unit-title-text">${escapeHtml(q.unit)}</span>
-          <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">${currentIndex + 1} / ${currentQuestions.length}</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button class="icon-btn" style="width:24px; height:24px; font-size:0.85rem;" onclick="skipQuestion()" title="換一題/跳過">⏭️</button>
+            <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">${currentIndex + 1} / ${currentQuestions.length}</span>
+          </div>
         </div>
 
         <div class="prompt-bubble">
@@ -1086,13 +1114,17 @@
       }
     }
 
-    function shuffleCurrentQuestions() {
-      for (let i = currentQuestions.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [currentQuestions[i], currentQuestions[j]] = [currentQuestions[j], currentQuestions[i]];
-      }
+    function shuffleCurrentQuestions(showToast = false) {
+      playPopSound();
+      shuffleArray(currentQuestions);
       currentIndex = 0;
       renderCurrentQuestion();
+      if (showToast) {
+        const drawer = document.getElementById('feedback-drawer');
+        if (drawer) drawer.classList.remove('open');
+        // Visual feedback
+        if (navigator.vibrate) navigator.vibrate(15);
+      }
     }
 
     function speakKorean(text) {
@@ -1280,10 +1312,10 @@ ${escapeHtml(ref.nuance)}</div>` : ''}
       return escapeHtml(text).replace(/\\n/g, '<br>');
     }
 
-    // Init
+    // Init - Auto-Shuffle on launch so user never gets stuck seeing question #1 every time!
     window.addEventListener('DOMContentLoaded', () => {
       loadState();
-      renderCurrentQuestion();
+      applyCombinedFilters(true); // Automatically randomizes questions upon launch!
     });
   </script>
 </body>
